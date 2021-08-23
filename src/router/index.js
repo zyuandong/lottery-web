@@ -17,6 +17,18 @@ const routes = [{
       path: 'lottery',
       component: () => import('@/views/Lottery.vue')
     },
+    {
+      path: 'admin/user',
+      component: () => import('@/views/admin/User.vue')
+    },
+    {
+      path: 'admin/prize',
+      component: () => import('@/views/admin/Prize.vue')
+    },
+    {
+      path: 'admin/award_record',
+      component: () => import('@/views/admin/AwardRecord.vue')
+    },
   ]
 }]
 

@@ -1,0 +1,32 @@
+@import './colors.scss';
+
+$default: (
+  primary: $blue,
+  // secondary: #0969A2,
+  white-main: $white,
+  black-main: $black,
+  menu-bg: #2E363F,
+  menu-text: #939da8,
+  menu-active-text: #fff,
+  bg: #efefef
+);
+
+:root {
+  @each $name, $color in $default {
+    --#{$name}: #{$color};
+  }
+
+  // --primary: #{$blue};
+}
+
+$dark: (
+  primary: $blue,
+  // secondary: #0969A2,
+  white-main: $white,
+);
+
+:root[theme-mode=dark] {
+  @each $name, $color in $dark {
+    --#{$name}: #{$color};
+  }
+}

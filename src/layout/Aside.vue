@@ -1,6 +1,16 @@
 <template>
   <div id="aside">
-    aside
+    <el-menu
+      background-color="#2E363F"
+      text-color="#939da8"
+      active-text-color="#fff"
+      :default-active="defaultActive"
+      @select="toPage"
+    >
+      <el-menu-item index="/admin/user">用户管理</el-menu-item>
+      <el-menu-item index="/admin/prize">奖品管理</el-menu-item>
+      <el-menu-item index="/admin/award_record">获奖记录</el-menu-item>
+    </el-menu>
   </div>
 </template>
 
@@ -21,15 +31,16 @@ export default {
 
     return {
       toPage,
-      defaultActive
+      defaultActive,
     };
-  }
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 #layout-menu {
   &.el-menu {
+    text-align: left;
     border: none;
     li.is-active {
       background-color: var(--primary) !important;
