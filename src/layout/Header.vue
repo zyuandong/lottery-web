@@ -13,8 +13,9 @@
     >
       <el-submenu index="submenu">
         <template #title>userName</template>
-        <el-menu-item index="/admin/user">Admin</el-menu-item>
-        <el-menu-item index="/lottery">Lottery</el-menu-item>
+        <el-menu-item index="/admin/user">系统管理</el-menu-item>
+        <el-menu-item index="/lottery">去抽奖</el-menu-item>
+        <el-menu-item index="/login">退出</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>
