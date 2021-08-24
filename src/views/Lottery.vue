@@ -60,50 +60,54 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+
 export default {
   setup() {
     const arr = [1, 2, 3, 6, 9, 8, 7, 4];
-    let index = 0;
-    let timer = null;
+    let index = ref(0);
+    let interval = null;
+    let timeout = null;
+    let stopWatch = null;
 
     const sendRequest = () => {
-      let closeTimer = null;
-      setTimeout(() => {
-        closeTimer = setInterval(() => {
-          if (index = 5) {
-            clearInterval(timer);
-            timer = null;
+      const keyIndex = Math.floor(Math.random() * 8);
+      // console.log(keyIndex);
+      clearTimeout(timeout);
+
+      timeout = setTimeout(() => {
+        stopWatch = watch(
+          () => index.value,
+          (val) => {
+            if (val === keyIndex) {
+              clearInterval(interval);
+              interval = null;
+              // stop watch: index.value
+              stopWatch();
+            }
           }
-        }, 100)
-        if (!timer) {
-          clearInterval(closeTimer);
-        }
-      }, 5000)
+        );
+      }, 1000);
     };
 
     const runAnimation = () => {
-      console.log(index);
-      if (!timer) {
-        // sendRequest();
-        timer = setInterval(() => {
+      if (!interval) {
+        sendRequest();
+        interval = setInterval(() => {
+          // console.log('inter', index);
           document
-            .querySelector(`.item-${arr[index]}`)
+            .querySelector(`.item-${arr[index.value]}`)
             .classList.remove('is-active');
 
           document
-            .querySelector(`.item-${arr[index === 7 ? 0 : index + 1]}`)
+            .querySelector(
+              `.item-${arr[index.value === 7 ? 0 : index.value + 1]}`
+            )
             .classList.add('is-active');
-          index = index === 7 ? 0 : index + 1;
-          // console.log(index);
+          index.value = index.value === 7 ? 0 : index.value + 1;
         }, 100);
-      } else {
-        clearInterval(timer);
-        timer = null;
       }
     };
-
-    // setInterval()
 
     return {
       runAnimation,
