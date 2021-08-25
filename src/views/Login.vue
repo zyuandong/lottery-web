@@ -9,7 +9,7 @@
         :model="form"
       >
         <el-form-item label="">
-          <el-input v-model="form.username" placeholder="用户名"></el-input>
+          <el-input v-model="form.name" placeholder="用户名"></el-input>
         </el-form-item>
 
         <el-form-item label="">
@@ -18,7 +18,7 @@
       </el-form>
 
       <div class="btn-box">
-        <el-button size="small" @click="toPage('/lottery')"> 登录 </el-button>
+        <el-button size="small" @click="handleLogin"> 登录 </el-button>
         <el-button size="small" @click="toPage('/register')"> 注册 </el-button>
       </div>
     </div>
@@ -28,6 +28,7 @@
 <script>
 import { reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
+import { login } from '@/apis/user';
 
 export default {
   setup() {
@@ -39,9 +40,16 @@ export default {
 
     const toPage = (path) => router.push({ path });
 
+    const handleLogin = () => {
+      login(state.form)
+        .then(res => console.log(res))
+        .catch(() => {})
+    };
+
     return {
       ...toRefs(state),
       toPage,
+      handleLogin,
     };
   },
 };
