@@ -7,8 +7,13 @@
       :default-active="defaultActive"
       @select="toPage"
     >
-      <el-menu-item index="/admin/user">用户管理</el-menu-item>
-      <el-menu-item index="/admin/prize">奖品管理</el-menu-item>
+      <el-menu-item index="/admin/users">用户管理</el-menu-item>
+      <!-- <el-menu-item index="/admin/prize">奖品管理</el-menu-item> -->
+      <el-submenu index="/admin/prizes">
+        <template #title>奖品管理</template>
+        <el-menu-item index="/admin/prizes/list">奖品列表</el-menu-item>
+        <el-menu-item index="/admin/prizes/setting">设置奖品池</el-menu-item>
+      </el-submenu>
       <el-menu-item index="/admin/award_record">获奖记录</el-menu-item>
     </el-menu>
   </div>
