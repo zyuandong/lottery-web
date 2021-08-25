@@ -25,3 +25,11 @@ export const getUsers = (params) => {
     params,
   });
 };
+
+export const lottery = (data) => {
+  return request({
+    url: `${context}/lottery`,
+    method: 'post',
+    data
+  })
+}

@@ -2,6 +2,7 @@
   <div id="lottery">
     <el-row>
       <el-col :sm="20">
+        <div>金币数量：{{ user.gold_coin_num }}</div>
         <div class="lottery-panel">
           <div class="lottery-border">
             <el-row class="p-8">
@@ -31,7 +32,7 @@
                 <div class="prize-item item-4">4</div>
               </el-col>
               <el-col :span="8">
-                <div class="btn-lottery" @click="runAnimation()">
+                <div class="btn-lottery" @click="handleLottery()">
                   <div class="text-lottery">抽奖</div>
                   <div class="text">100 金币 / 次</div>
                 </div>
@@ -61,6 +62,7 @@
 
 <script>
 import { reactive, ref, toRefs, watch } from 'vue';
+import { lottery } from '@/apis/user';
 
 export default {
   setup() {
@@ -75,26 +77,30 @@ export default {
     let stopWatch = null;
 
     const sendRequest = () => {
-      const keyIndex = Math.floor(Math.random() * 8);
-      // console.log(keyIndex);
-      clearTimeout(timeout);
+      lottery({...state.user})
+        .then((res) => {
+          const keyIndex = res.data.data;
 
-      timeout = setTimeout(() => {
-        stopWatch = watch(
-          () => index.value,
-          (val) => {
-            if (val === keyIndex) {
-              clearInterval(interval);
-              interval = null;
-              // stop watch: index.value
-              stopWatch();
-            }
-          }
-        );
-      }, 1000);
+          clearTimeout(timeout);
+
+          timeout = setTimeout(() => {
+            stopWatch = watch(
+              () => index.value,
+              (val) => {
+                if (val === keyIndex) {
+                  clearInterval(interval);
+                  interval = null;
+                  // stop watch: index.value
+                  stopWatch();
+                }
+              }
+            );
+          }, 1000);
+        })
+        .catch();
     };
 
-    const runAnimation = () => {
+    const handleLottery = () => {
       if (!interval) {
         sendRequest();
         interval = setInterval(() => {
@@ -115,7 +121,7 @@ export default {
 
     return {
       ...toRefs(state),
-      runAnimation,
+      handleLottery,
     };
   },
 };
