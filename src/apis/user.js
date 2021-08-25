@@ -1,20 +1,27 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
 
-const context = '/users'
+const context = '/users';
 
 export const register = (data) => {
   return request({
     url: `${context}/register`,
     method: 'post',
-    data
-  })
-}
+    data,
+  });
+};
 
 export const login = (params) => {
   return request({
     url: `${context}/login`,
     method: 'get',
-    params
-  })
-}
+    params,
+  });
+};
 
+export const getUsers = (params) => {
+  return request({
+    url: `${context}`,
+    method: 'get',
+    params,
+  });
+};
