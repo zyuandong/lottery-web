@@ -12,20 +12,25 @@
       @select="toPage"
     >
       <el-submenu index="submenu">
-        <template #title>userName</template>
+        <template #title>{{ user.name }}</template>
         <el-menu-item index="/admin/user">系统管理</el-menu-item>
         <el-menu-item index="/lottery">去抽奖</el-menu-item>
-        <el-menu-item index="/login">退出</el-menu-item>
+        <el-menu-item @click="handleSignOut">退出</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>
 </template>
 
 <script>
+import { reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 
 export default {
   setup() {
+    const state = reactive({
+      user: JSON.parse(sessionStorage.getItem('user')),
+    });
+
     const router = useRouter();
     let defaultActive = '/lottery';
     if (router.currentRoute.value.fullPath.includes('admin')) {
@@ -37,9 +42,16 @@ export default {
       router.push(index);
     };
 
+    const handleSignOut = () => {
+      sessionStorage.clear('user')
+      toPage('/login')
+    }
+
     return {
+      ...toRefs(state),
       toPage,
-      defaultActive
+      defaultActive,
+      handleSignOut
     };
   },
 };

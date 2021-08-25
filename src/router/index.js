@@ -1,3 +1,4 @@
+import { ElMessage } from 'element-plus';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const constantRoutes = [
@@ -26,12 +27,12 @@ const constantRoutes = [
   },
   {
     path: '/:pathMatch(.*)',
-    redirect: '/404'
-  }
+    redirect: '/404',
+  },
 ];
 
-const asyncRoutes = [
-  {
+export const asyncRoutes = {
+  admin: {
     path: '/admin',
     component: () => import('@/layout/Index.vue'),
     redirect: '/admin/user',
@@ -50,15 +51,34 @@ const asyncRoutes = [
       },
     ],
   },
-];
+};
 
 const router = createRouter({
   history: createWebHistory(),
   routes: constantRoutes, // short for `routes: routes`
 });
 
-// asyncRoutes.forEach(item => {
-//   router.addRoute(item)
-// });
+router.beforeEach((to, form, next) => {
+  console.log(to);
+  console.log(form);
+  const user = JSON.parse(sessionStorage.getItem('user'));
+  if (to.path === '/login' || to.path === '/register') {
+    if (user) {
+      return next('/lottery')
+    }
+    return next();
+  }
+  if (user) {
+    // TODO 鉴权
+    if (user.is_admin === 'T') {
+      router.addRoute(asyncRoutes.admin);
+    }
+    next();
+  } else {
+    ElMessage.warning('请登录系统！');
+    console.log('== to login ==');
+    next('/login');
+  }
+});
 
 export default router;

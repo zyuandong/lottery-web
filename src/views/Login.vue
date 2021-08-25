@@ -21,6 +21,8 @@
         <el-button size="small" @click="handleLogin"> 登录 </el-button>
         <el-button size="small" @click="toPage('/register')"> 注册 </el-button>
       </div>
+
+      <!-- <router-link to="/lottery">lottery</router-link> -->
     </div>
   </div>
 </template>
@@ -28,6 +30,7 @@
 <script>
 import { reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
 import { login } from '@/apis/user';
 
 export default {
@@ -35,15 +38,27 @@ export default {
     const router = useRouter();
 
     const state = reactive({
-      form: {},
+      form: {
+        name: 'admin',
+        password: '123456',
+      },
     });
 
     const toPage = (path) => router.push({ path });
 
     const handleLogin = () => {
       login(state.form)
-        .then(res => console.log(res))
-        .catch(() => {})
+        .then((res) => {
+          if (res.data.code === 200) {
+            if (res.data.data.length === 1) {
+              const user = res.data.data[0];
+              sessionStorage.setItem('user', JSON.stringify(user));
+              ElMessage.success('登录成功');
+              router.push({ path: '/lottery' });
+            }
+          }
+        })
+        .catch(() => {});
     };
 
     return {

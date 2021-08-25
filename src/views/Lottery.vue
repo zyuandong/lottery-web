@@ -60,10 +60,14 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { reactive, ref, toRefs, watch } from 'vue';
 
 export default {
   setup() {
+    const state = reactive({
+      user: JSON.parse(sessionStorage.getItem('user')),
+    });
+
     const arr = [1, 2, 3, 6, 9, 8, 7, 4];
     let index = ref(0);
     let interval = null;
@@ -110,6 +114,7 @@ export default {
     };
 
     return {
+      ...toRefs(state),
       runAnimation,
     };
   },
