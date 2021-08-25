@@ -4,7 +4,7 @@ import router, { asyncRoutes } from '@/router';
 import ElementPlus from 'element-plus';
 
 import 'element-plus/packages/theme-chalk/src/index.scss';
-import './styles/index.scss';
+import '@/styles/index.scss';
 
 // 刷新时，动态添加 admin 路由
 const user = JSON.parse(sessionStorage.getItem('user'));

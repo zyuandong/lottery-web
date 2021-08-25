@@ -5,24 +5,48 @@
       <el-table-column prop="gold_coin_num" label="金币数量"></el-table-column>
       <el-table-column prop="is_admin" label="管理员"></el-table-column>
     </el-table>
+
+    <Pagination
+      v-if="!loading"
+      :pagination="pagination"
+      @currentChange="handleCurrentChange"
+      @sizeChange="handleSizeChange"
+    />
   </div>
 </template>
 
 <script>
 import { onMounted, reactive, toRefs } from 'vue';
-import { getUsers } from '@/api/user';
+import { getUsers } from '@/apis/user';
+import Pagination from '@/components/Pagination.vue';
 
 export default {
+  components: {
+    Pagination,
+  },
   setup() {
     const state = reactive({
       tableData: [],
+      pagination: {
+        total: 0,
+        page: 1,
+        pageSize: 10,
+      },
+      loading: false
     });
 
     const getUsersData = () => {
-      getUsers()
-        .then((res) => console.log(res.data))
+      getUsers({
+        page: 1,
+        pageSize: 10,
+      })
+        .then((res) => (state.tableData = res.data.data.resultSet))
         .catch();
     };
+
+    const handleSizeChange = () => {};
+
+    const handleCurrentChange = () => {};
 
     onMounted(() => {
       getUsersData();
@@ -30,6 +54,8 @@ export default {
 
     return {
       ...toRefs(state),
+      handleSizeChange,
+      handleCurrentChange,
     };
   },
 };

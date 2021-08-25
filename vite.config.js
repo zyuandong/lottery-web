@@ -15,7 +15,8 @@ export default defineConfig({
     open: false,
     proxy: {
       "/lottery_service_api": {
-        target: "http://192.168.22.14:3000/",
+        // target: "http://192.168.22.14:3000/",
+        target: "http://localhost:3000/",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/lottery_service_api/, '')
       }
