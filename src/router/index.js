@@ -73,7 +73,7 @@ router.beforeEach((to, form, next) => {
     // TODO 鉴权
     // console.log(router.hasRoute('admin'));
     // console.log(router.getRoutes());
-    if (user.is_admin === 'T' && !router.hasRoute('admin')) {
+    if (user.is_admin && !router.hasRoute('admin')) {
       router.addRoute(asyncRoutes.admin);
       next({ ...to, replace: true });
     }

@@ -5,14 +5,14 @@
       <el-table-column prop="gold_coin_num" label="金币数量"></el-table-column>
       <el-table-column prop="is_admin" label="管理员">
         <template #default="scope">
-          <el-tag v-if="scope.row.is_admin === 'T'">是</el-tag>
+          <el-tag v-if="scope.row.is_admin">是</el-tag>
           <el-tag v-else type="info">否</el-tag>
         </template>
       </el-table-column>
     </el-table>
 
     <Pagination
-      v-if="!loading"
+      v-if="tableData.length"
       :pagination="pagination"
       @currentChange="handleCurrentChange"
     />

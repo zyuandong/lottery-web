@@ -8,7 +8,7 @@ import '@/styles/index.scss';
 
 // 刷新时，动态添加 admin 路由
 const user = JSON.parse(sessionStorage.getItem('user'));
-if (user && user.is_admin === 'T') {
+if (user && user.is_admin) {
   router.addRoute(asyncRoutes.admin)
 }
 
