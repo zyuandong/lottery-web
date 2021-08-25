@@ -11,6 +11,10 @@ const constantRoutes = [
         path: 'lottery',
         component: () => import('@/views/Lottery.vue'),
       },
+      {
+        path: '404',
+        component: () => import('@/views/404.vue'),
+      },
     ],
   },
   {
@@ -22,10 +26,6 @@ const constantRoutes = [
     component: () => import('@/views/Register.vue'),
   },
   {
-    path: '/404',
-    component: () => import('@/views/404.vue'),
-  },
-  {
     path: '/:pathMatch(.*)',
     redirect: '/404',
   },
@@ -33,6 +33,7 @@ const constantRoutes = [
 
 export const asyncRoutes = {
   admin: {
+    name: 'admin',
     path: '/admin',
     component: () => import('@/layout/Index.vue'),
     redirect: '/admin/user',
@@ -59,19 +60,22 @@ const router = createRouter({
 });
 
 router.beforeEach((to, form, next) => {
-  console.log(to);
-  console.log(form);
+  // console.log(to);
+  // console.log(form);
   const user = JSON.parse(sessionStorage.getItem('user'));
   if (to.path === '/login' || to.path === '/register') {
     if (user) {
-      return next('/lottery')
+      return next('/lottery');
     }
     return next();
   }
   if (user) {
     // TODO 鉴权
-    if (user.is_admin === 'T') {
+    // console.log(router.hasRoute('admin'));
+    // console.log(router.getRoutes());
+    if (user.is_admin === 'T' && !router.hasRoute('admin')) {
       router.addRoute(asyncRoutes.admin);
+      next({ ...to, replace: true });
     }
     next();
   } else {
