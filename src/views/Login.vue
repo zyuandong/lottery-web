@@ -55,6 +55,8 @@ export default {
               sessionStorage.setItem('user', JSON.stringify(user));
               ElMessage.success('登录成功');
               router.push({ path: '/lottery' });
+            } else {
+              ElMessage.error('用户名或密码错误！');
             }
           }
         })

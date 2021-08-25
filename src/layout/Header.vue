@@ -13,8 +13,8 @@
     >
       <el-submenu index="submenu">
         <template #title>{{ user.name }}</template>
-        <el-menu-item index="/admin/user">系统管理</el-menu-item>
-        <el-menu-item index="/lottery">去抽奖</el-menu-item>
+        <el-menu-item index="/admin/user" v-if="user.is_admin === 'T'">系统管理</el-menu-item>
+        <el-menu-item index="/lottery" v-if="user.is_admin === 'T'">去抽奖</el-menu-item>
         <el-menu-item @click="handleSignOut">退出</el-menu-item>
       </el-submenu>
     </el-menu>

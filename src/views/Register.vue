@@ -9,7 +9,7 @@
         :model="form"
       >
         <el-form-item label="">
-          <el-input v-model="form.username" placeholder="用户名"></el-input>
+          <el-input v-model="form.name" placeholder="用户名"></el-input>
         </el-form-item>
 
         <el-form-item label="">
@@ -18,13 +18,16 @@
       </el-form>
 
       <div class="btn-box">
-        <el-button class="register-btn" size="small" @click="toPage('/register')">
+        <el-button class="register-btn" size="small" @click="handleRegister">
           注册
         </el-button>
+        <div class="m-t-8">
+          已有账号，去 <router-link to="/login">登录</router-link>
+        </div>
       </div>
-      <div class="btn-box">
+      <!-- <div class="btn-box">
         <span>已有账号，去 <router-link to="/login">登录</router-link></span>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -32,6 +35,8 @@
 <script>
 import { reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
+import { register } from '@/apis/user';
+import { ElMessage } from 'element-plus';
 
 export default {
   setup() {
@@ -43,9 +48,25 @@ export default {
 
     const toPage = (path) => router.push({ path });
 
+    const handleRegister = () => {
+      register(state.form)
+        .then((res) => {
+          if (res.data.errorCode === '500_01') {
+            ElMessage.warning('请输入用户名和密码！');
+          } else if (res.data.errorCode === '500_02') {
+            ElMessage.warning('账户信息已存在！');
+          } else {
+            ElMessage.success('注册成功，请登录！');
+            router.push('/login');
+          }
+        })
+        .catch();
+    };
+
     return {
       ...toRefs(state),
       toPage,
+      handleRegister,
     };
   },
 };
