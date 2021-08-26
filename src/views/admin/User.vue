@@ -3,7 +3,7 @@
     <el-table :data="tableData">
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="gold_coin_num" label="金币数量"></el-table-column>
-      <el-table-column prop="is_admin" label="管理员">
+      <el-table-column prop="is_admin" label="是否为管理员">
         <template #default="scope">
           <el-tag v-if="scope.row.is_admin">是</el-tag>
           <el-tag v-else type="info">否</el-tag>

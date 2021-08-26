@@ -34,7 +34,7 @@ export default {
     const router = useRouter();
     let defaultActive = '/lottery';
     if (router.currentRoute.value.fullPath.includes('admin')) {
-      defaultActive = '/admin/user';
+      defaultActive = '/admin/users';
     }
 
     const toPage = (index, indexPath) => {

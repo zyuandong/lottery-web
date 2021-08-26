@@ -8,7 +8,14 @@
     <el-table :data="tableData">
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="pic" label="图片"></el-table-column>
+      <el-table-column prop="number" label="数量"></el-table-column>
       <el-table-column prop="probability" label="概率"></el-table-column>
+      <el-table-column prop="is_gold_coin" label="是否为金币">
+        <template #default="scope">
+          <el-tag v-if="scope.row.is_gold_coin">是</el-tag>
+          <el-tag v-else type="info">否</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="is_active" label="状态">
         <template #default="scope">
           <el-tag v-if="scope.row.is_active">激活</el-tag>
