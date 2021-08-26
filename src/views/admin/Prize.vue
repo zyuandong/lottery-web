@@ -2,7 +2,9 @@
   <div id="prize">
     <div class="control-box">
       <div class="left">
-        <el-button type="primary" size="small">添加</el-button>
+        <el-button type="primary" size="small" @click="handleAdd"
+          >添加</el-button
+        >
       </div>
     </div>
     <el-table :data="tableData">
@@ -34,6 +36,11 @@
       :pagination="pagination"
       @currentChange="handleCurrentChange"
     />
+
+    <el-dialog v-model="dialogForm" width="500px" v-if="dialogForm">
+      <template #title>新增奖品</template>
+      <PrizeForm />
+    </el-dialog>
   </div>
 </template>
 
@@ -41,10 +48,12 @@
 import { onMounted, reactive, toRefs } from 'vue';
 import { getPrizes } from '@/apis/prize';
 import Pagination from '@/components/Pagination.vue';
+import PrizeForm from './components/PrizeForm.vue';
 
 export default {
   components: {
     Pagination,
+    PrizeForm,
   },
 
   setup() {
@@ -56,6 +65,7 @@ export default {
         pageSize: 10,
       },
       loading: false,
+      dialogForm: false,
     });
 
     const getPrisesData = () => {
@@ -78,6 +88,10 @@ export default {
 
     const handleEdit = () => {};
 
+    const handleAdd = () => {
+      state.dialogForm = true;
+    };
+
     onMounted(() => {
       getPrisesData();
     });
@@ -86,6 +100,7 @@ export default {
       ...toRefs(state),
       handleCurrentChange,
       handleEdit,
+      handleAdd,
     };
   },
 };
