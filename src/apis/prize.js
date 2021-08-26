@@ -11,3 +11,11 @@ export const getPrizes = (params) => {
     params,
   });
 };
+
+export const getPrizePools = (params) => {
+  return request({
+    url: `${context}/prize_pools`,
+    method: 'get',
+    params
+  })
+}
