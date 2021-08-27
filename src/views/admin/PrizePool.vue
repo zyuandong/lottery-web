@@ -1,5 +1,23 @@
 <template>
   <div id="prize-pool">
+    <el-alert
+      v-if="probabilityTotal === 1"
+      type="success"
+      title="当前奖池设置符合要求，抽奖功能将正常使用。"
+      :closeable="false"
+    ></el-alert>
+
+    <el-alert
+      v-else
+      type="error"
+      title="警告：当前奖池设置不符合「注意事项」中的两个要求，抽奖结果将不会被统计。"
+      :closable="false"
+    ></el-alert>
+
+    <div class="text-error m-t-8" v-if="probabilityTotal != 1">
+      当前概率总和为：{{ probabilityTotal }}
+    </div>
+
     <div class="lottery-panel">
       <div class="lottery-border">
         <el-row class="p-8">
@@ -30,11 +48,24 @@
                 placeholder="概率"
                 v-model="item.probability"
                 v-if="item"
+                @change="handleChangeProbability(item)"
               ></el-input>
+              <div class="text-error" v-if="item.probability < 0">
+                概率不能小于 0
+              </div>
             </div>
           </el-col>
         </el-row>
       </div>
+    </div>
+
+    <div class="text-tip">
+      <div class="m-b-16">注意事项：</div>
+      <div>设置奖池必须满足以下两个要求：</div>
+      <ul>
+        <li>所有奖品的概率总和为 1</li>
+        <li>奖品的概率最小为 0，不能设置为负数</li>
+      </ul>
     </div>
 
     <el-dialog
@@ -52,10 +83,10 @@
 </template>
 
 <script>
-import { onMounted, reactive, ref, toRefs } from 'vue';
+import { computed, onMounted, reactive, ref, toRefs } from 'vue';
 import { getPrizePool, setPrizePool } from '@/apis/prize';
 import SelectPrize from './components/SelectPrize.vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 export default {
   components: {
@@ -69,10 +100,17 @@ export default {
 
     const placeIndex = ref(0);
 
+    const probabilityTotal = computed(() => {
+      let count = 0;
+      state.prizePoolData.forEach((item) => {
+        if (item && item.probability >= 0) count += Number(item.probability);
+      });
+      return count;
+    });
+
     const getPrizePoolData = () => {
       getPrizePool()
         .then((res) => {
-          // console.log(res.data);
           res.data.data.forEach((item) => {
             state.prizePoolData[item.place_index] = item;
           });
@@ -102,14 +140,32 @@ export default {
 
     const handleDelete = (obj) => {
       // console.log(obj);
-      setPrizePool({
-        ...obj,
-        ...{ is_active: 0, probability: 0 },
-      })
+      ElMessageBox.confirm('请确定是否删除此项设置！', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(() => {
+        setPrizePool({
+          ...obj,
+          ...{ is_active: 0, probability: 0 },
+        })
+          .then((res) => {
+            if (res.data.code === 200) {
+              ElMessage.success('删除成功！');
+              state.prizePoolData[obj.place_index] = 0;
+              getPrizePoolData();
+            }
+          })
+          .catch();
+      });
+    };
+
+    const handleChangeProbability = (obj) => {
+      if (obj.probability < 0) return;
+      setPrizePool(obj)
         .then((res) => {
           if (res.data.code === 200) {
-            ElMessage.success('删除成功，请添加其他奖品！');
-            state.prizePoolData[obj.place_index] = 0;
+            ElMessage.success(`「${obj.name}」的获奖概率修改成功！`);
             getPrizePoolData();
           }
         })
@@ -122,15 +178,15 @@ export default {
 
     return {
       ...toRefs(state),
+      probabilityTotal,
       handleDelete,
       handleAdd,
       handleSetPrizePool,
+      handleChangeProbability,
     };
   },
 };
 </script>
-
-<style></style>
 
 <style lang="scss">
 #prize-pool {
@@ -141,7 +197,7 @@ export default {
     background-color: #f2c889;
     padding: 0.16rem;
     border-radius: 0.04rem;
-    margin: 0.5rem auto;
+    margin: 0.32rem auto 0.16rem;
 
     .lottery-border {
       background-color: #df7823;
@@ -179,6 +235,11 @@ export default {
         margin-top: calc(35% - 0.19rem);
       }
     }
+  }
+
+  .text-tip {
+    width: 50%;
+    margin: 0 auto;
   }
 }
 </style>
