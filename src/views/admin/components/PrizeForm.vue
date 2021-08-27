@@ -37,7 +37,8 @@ export default {
     const state = reactive({
       form: {
         type: 0,
-        number: 1
+        number: 1,
+        place_index: -1
       },
     });
 

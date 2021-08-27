@@ -33,7 +33,7 @@
     </el-table>
 
     <Pagination
-      v-if="tableData.length"
+      v-if="pagination.total > pagination.pageSize"
       :pagination="pagination"
       @currentChange="handleCurrentChange"
     />
