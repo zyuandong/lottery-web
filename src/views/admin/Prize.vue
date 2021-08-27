@@ -12,10 +12,11 @@
       <el-table-column prop="pic" label="图片"></el-table-column>
       <el-table-column prop="number" label="数量"></el-table-column>
       <el-table-column prop="probability" label="概率"></el-table-column>
-      <el-table-column prop="is_gold_coin" label="是否为金币">
+      <el-table-column label="类型">
         <template #default="scope">
-          <el-tag v-if="scope.row.is_gold_coin">是</el-tag>
-          <el-tag v-else type="info">否</el-tag>
+          <el-tag v-if="scope.row.type === 0" type="info">文字</el-tag>
+          <el-tag v-else-if="scope.row.type === 1" type="warning">金币</el-tag>
+          <el-tag v-else>实物</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="is_active" label="状态">
