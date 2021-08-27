@@ -3,6 +3,7 @@
     <el-row>
       <el-col :sm="20">
         <div>金币数量：{{ user.gold_coin_num }}</div>
+        <!-- <div>{{ probabilityTotal }}</div> -->
         <div class="lottery-panel">
           <div class="lottery-border">
             <el-row class="p-8">
@@ -23,7 +24,10 @@
                 <div
                   class="prize-item"
                   v-else
-                  :class="[`item-${placeIndexArr[index]}`, {'is-active': index === 0}]"
+                  :class="[
+                    `item-${placeIndexArr[index]}`,
+                    { 'is-active': index === 0 },
+                  ]"
                 >
                   <!-- <img src="../assets/260.jpg" alt="" /> -->
                   <div class="text" v-if="item">{{ item.name }}</div>
@@ -41,7 +45,7 @@
 </template>
 
 <script>
-import { onMounted, reactive, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue';
 import { lottery } from '@/apis/user';
 import { getPrizePool } from '@/apis/prize';
 
@@ -59,28 +63,45 @@ export default {
     let timeout = null;
     let stopWatch = null;
 
+    const probabilityTotal = computed(() => {
+      let count = 0;
+      state.prizePoolData.forEach((item) => {
+        if (item && item.probability >= 0) count += Number(item.probability);
+      });
+      return count;
+    });
+
     const sendRequest = () => {
+      // 概率和不等于 1，前端随机出奖，不存储入库。
+      if (probabilityTotal.value != 1) {
+        const placeIndex = Math.floor(Math.random() * 8);
+        return stopAnimation(placeIndex)
+      }
       lottery({ ...state.user })
         .then((res) => {
-          const keyIndex = res.data.data;
+          const placeIndex = res.data.data;
 
-          clearTimeout(timeout);
-
-          timeout = setTimeout(() => {
-            stopWatch = watch(
-              () => index.value,
-              (val) => {
-                if (val === keyIndex) {
-                  clearInterval(interval);
-                  interval = null;
-                  // stop watch: index.value
-                  stopWatch();
-                }
-              }
-            );
-          }, 1000);
+          stopAnimation(placeIndex)
         })
         .catch();
+    };
+
+    const stopAnimation = (placeIndex) => {
+      clearTimeout(timeout);
+
+      timeout = setTimeout(() => {
+        stopWatch = watch(
+          () => index.value,
+          (val) => {
+            if (val === placeIndex) {
+              clearInterval(interval);
+              interval = null;
+              // stop watch: index.value
+              stopWatch();
+            }
+          }
+        );
+      }, 1000);
     };
 
     const handleLottery = () => {
@@ -116,6 +137,7 @@ export default {
 
     return {
       ...toRefs(state),
+      probabilityTotal,
       placeIndexArr: [0, 1, 2, 7, 8, 3, 6, 5, 4],
       handleLottery,
     };
