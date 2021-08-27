@@ -19,7 +19,7 @@
     </el-form>
 
     <div class="btn-box">
-      <el-button size="small">取消</el-button>
+      <el-button size="small" @click="handleCancel">取消</el-button>
       <el-button size="small" type="primary" @click="handleSubmit">确定</el-button>
     </div>
 
@@ -32,7 +32,7 @@ import { reactive, toRefs } from 'vue';
 import { addPrize } from '@/apis/prize';
 
 export default {
-  setup() {
+  setup(props, {emit}) {
     const state = reactive({
       form: {
         type: 0,
@@ -48,9 +48,14 @@ export default {
         .catch()
     };
 
+    const handleCancel = () => {
+      emit('close')
+    };
+
     return {
       ...toRefs(state),
-      handleSubmit
+      handleSubmit,
+      handleCancel
     };
   },
 };

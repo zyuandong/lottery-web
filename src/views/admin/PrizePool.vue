@@ -37,8 +37,16 @@
       </div>
     </div>
 
-    <el-dialog v-model="dialogSelectPrize" title="选择奖品">
-      <SelectPrize v-if="dialogSelectPrize" @selectPrize="handleSetPrizePool" />
+    <el-dialog
+      v-model="dialogSelectPrize"
+      title="选择奖品"
+      :close-on-click-modal="false"
+    >
+      <SelectPrize
+        v-if="dialogSelectPrize"
+        @selectPrize="handleSetPrizePool"
+        @close="dialogSelectPrize = false"
+      />
     </el-dialog>
   </div>
 </template>

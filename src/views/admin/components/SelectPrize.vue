@@ -39,7 +39,7 @@
     />
 
     <div class="btn-box m-t-16">
-      <el-button size="small">取消</el-button>
+      <el-button size="small" @click="handleCancel">取消</el-button>
       <el-button size="small" type="primary" @click="handleSure"
         >确定</el-button
       >
@@ -96,6 +96,10 @@ export default {
       emit('selectPrize', state.selectedObj);
     };
 
+    const handleCancel = () => {
+      emit('close')
+    }
+
     onMounted(() => {
       getPrisesData();
     });
@@ -105,6 +109,7 @@ export default {
       selectedId: ref(''),
       handleCurrentChange,
       handleSure,
+      handleCancel,
       handleChangeSelect,
     };
   },

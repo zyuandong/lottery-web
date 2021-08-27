@@ -38,8 +38,8 @@
       @currentChange="handleCurrentChange"
     />
 
-    <el-dialog v-model="dialogForm" title="新增奖品"  width="500px" v-if="dialogForm">
-      <PrizeForm />
+    <el-dialog v-model="dialogForm" title="新增奖品"  width="500px" v-if="dialogForm" :close-on-click-modal="false">
+      <PrizeForm @close="dialogForm = false" />
     </el-dialog>
   </div>
 </template>
