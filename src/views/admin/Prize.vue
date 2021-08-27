@@ -2,9 +2,9 @@
   <div id="prize">
     <div class="control-box">
       <div class="left">
-        <el-button type="primary" size="small" @click="handleAdd"
-          >添加</el-button
-        >
+        <el-button type="primary" size="small" @click="handleAdd">
+          新增
+        </el-button>
       </div>
     </div>
     <el-table :data="tableData">
@@ -38,7 +38,13 @@
       @currentChange="handleCurrentChange"
     />
 
-    <el-dialog v-model="dialogForm" title="新增奖品"  width="500px" v-if="dialogForm" :close-on-click-modal="false">
+    <el-dialog
+      v-model="dialogForm"
+      title="新增奖品"
+      width="500px"
+      v-if="dialogForm"
+      :close-on-click-modal="false"
+    >
       <PrizeForm @close="dialogForm = false" />
     </el-dialog>
   </div>

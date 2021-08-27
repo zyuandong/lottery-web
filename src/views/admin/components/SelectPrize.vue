@@ -1,6 +1,8 @@
 <template>
   <div id="select-prize">
-    <!-- <router-link to="/admin/prizes/list">新增奖品</router-link> -->
+    <el-button type="text" @click="router.push('/admin/prizes/list')">
+      新增奖品
+    </el-button>
     <el-table :data="tableData">
       <!-- <el-table-column type="selection" width="55"></el-table-column> -->
       <el-table-column label="选择" align="center" width="55">
@@ -51,6 +53,7 @@
 import { onMounted, reactive, toRefs, ref } from 'vue';
 import { getPrizes } from '@/apis/prize';
 import Pagination from '@/components/Pagination.vue';
+import { useRouter } from 'vue-router';
 
 export default {
   components: {
@@ -69,6 +72,8 @@ export default {
       dialogForm: false,
       selectedObj: null,
     });
+
+    const router = useRouter();
 
     const getPrisesData = () => {
       const { page, pageSize } = state.pagination;
@@ -97,8 +102,8 @@ export default {
     };
 
     const handleCancel = () => {
-      emit('close')
-    }
+      emit('close');
+    };
 
     onMounted(() => {
       getPrisesData();
@@ -107,6 +112,7 @@ export default {
     return {
       ...toRefs(state),
       selectedId: ref(''),
+      router,
       handleCurrentChange,
       handleSure,
       handleCancel,
