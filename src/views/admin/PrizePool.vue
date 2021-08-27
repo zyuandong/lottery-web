@@ -1,21 +1,23 @@
 <template>
   <div id="prize-pool">
-    <el-alert
-      v-if="probabilityTotal === 1"
-      type="success"
-      title="当前奖池设置符合要求，抽奖功能将正常使用。"
-      :closeable="false"
-    ></el-alert>
+    <div v-if="showMessage">
+      <el-alert
+        v-if="probabilityTotal === 1"
+        type="success"
+        title="当前奖池设置符合要求，抽奖功能可以正常使用。"
+        :closable="false"
+      ></el-alert>
 
-    <el-alert
-      v-else
-      type="error"
-      title="警告：当前奖池设置不符合「注意事项」中的两个要求，抽奖结果将不会被统计。"
-      :closable="false"
-    ></el-alert>
+      <el-alert
+        v-else
+        type="error"
+        title="警告：当前奖池设置不符合「注意事项」中的两个要求，抽奖结果将不会被统计。"
+        :closable="false"
+      ></el-alert>
 
-    <div class="text-error m-t-8" v-if="probabilityTotal != 1">
-      当前概率总和为：{{ probabilityTotal }}
+      <div class="text-error m-t-8" v-if="probabilityTotal != 1">
+        当前概率总和为：{{ probabilityTotal }}
+      </div>
     </div>
 
     <div class="lottery-panel">
@@ -96,6 +98,7 @@ export default {
     const state = reactive({
       prizePoolData: new Array(9).fill(0),
       dialogSelectPrize: false,
+      showMessage: false,
     });
 
     const placeIndex = ref(0);
@@ -114,6 +117,7 @@ export default {
           res.data.data.forEach((item) => {
             state.prizePoolData[item.place_index] = item;
           });
+          state.showMessage = true;
         })
         .catch();
     };
