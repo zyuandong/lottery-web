@@ -1,10 +1,16 @@
 <template>
   <div id="select-prize">
+    <!-- <router-link to="/admin/prizes/list">新增奖品</router-link> -->
     <el-table :data="tableData">
       <!-- <el-table-column type="selection" width="55"></el-table-column> -->
       <el-table-column label="选择" align="center" width="55">
         <template #default="scope">
-          <el-radio v-model="selected" :label="scope.row" v-if="!scope.row.is_active"></el-radio>
+          <el-radio
+            v-model="selectedId"
+            :label="scope.row.oid"
+            v-if="!scope.row.is_active"
+            @change="handleChangeSelect(scope.row)"
+          ></el-radio>
         </template>
       </el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
@@ -24,11 +30,6 @@
           <el-tag v-else type="info">未激活</el-tag>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="操作">
-        <template #default="scope">
-          <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
-        </template>
-      </el-table-column> -->
     </el-table>
 
     <Pagination
@@ -39,7 +40,9 @@
 
     <div class="btn-box m-t-16">
       <el-button size="small">取消</el-button>
-      <el-button size="small" type="primary" @click="handleSure">确定</el-button>
+      <el-button size="small" type="primary" @click="handleSure"
+        >确定</el-button
+      >
     </div>
   </div>
 </template>
@@ -48,15 +51,13 @@
 import { onMounted, reactive, toRefs, ref } from 'vue';
 import { getPrizes } from '@/apis/prize';
 import Pagination from '@/components/Pagination.vue';
-// import PrizeForm from './components/PrizeForm.vue';
 
 export default {
   components: {
     Pagination,
-    // PrizeForm,
   },
 
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const state = reactive({
       tableData: [],
       pagination: {
@@ -66,10 +67,8 @@ export default {
       },
       loading: false,
       dialogForm: false,
-      selected: null
+      selectedObj: null,
     });
-
-    // const selected = ref('');
 
     const getPrisesData = () => {
       const { page, pageSize } = state.pagination;
@@ -89,13 +88,13 @@ export default {
       getPrisesData();
     };
 
-    const handleSure = () => {
-      emit('selectPrize', state.selected)
+    const handleChangeSelect = (obj) => {
+      state.selectedObj = obj;
     };
 
-    // const handleAdd = () => {
-    //   state.dialogForm = true;
-    // };
+    const handleSure = () => {
+      emit('selectPrize', state.selectedObj);
+    };
 
     onMounted(() => {
       getPrisesData();
@@ -103,9 +102,10 @@ export default {
 
     return {
       ...toRefs(state),
-      // selected,
+      selectedId: ref(''),
       handleCurrentChange,
-      handleSure
+      handleSure,
+      handleChangeSelect,
     };
   },
 };

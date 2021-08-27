@@ -96,7 +96,7 @@ export default {
       // console.log(obj);
       setPrizePool({
         ...obj,
-        ...{is_active: 0}
+        ...{ is_active: 0, probability: 0 },
       })
         .then((res) => {
           if (res.data.code === 200) {
