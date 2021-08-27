@@ -166,6 +166,8 @@ export default {
 
     const handleChangeProbability = (obj) => {
       if (obj.probability < 0) return;
+      obj.probability = obj.probability === '' ? 0 : obj.probability;
+
       setPrizePool(obj)
         .then((res) => {
           if (res.data.code === 200) {
