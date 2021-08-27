@@ -56,12 +56,13 @@ export default {
       prizePoolData: new Array(9).fill(0),
     });
 
-    // const arr = [1, 2, 3, 6, 9, 8, 7, 4];
-    // const placeIndexArr = [0, 1, 2, 7, 8, 3, 6, 5, 4];
     let index = ref(0);
     let interval = null;
     let timeout = null;
     let stopWatch = null;
+
+    // placeIndex => renderIndex
+    const renderIndexArr = [0, 1, 2, 5, 8, 7, 6, 3, 4];
 
     const probabilityTotal = computed(() => {
       let count = 0;
@@ -125,7 +126,7 @@ export default {
       getPrizePool()
         .then((res) => {
           res.data.data.forEach((item) => {
-            state.prizePoolData[item.place_index] = item;
+            state.prizePoolData[renderIndexArr[item.place_index]] = item;
           });
         })
         .catch();

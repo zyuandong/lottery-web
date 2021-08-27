@@ -30,7 +30,7 @@
                 type="text"
                 size="mini"
                 v-if="!item"
-                @click="handleAdd(index)"
+                @click="handleAdd(placeIndexArr[index])"
               >
                 添加
               </el-button>
@@ -103,6 +103,9 @@ export default {
 
     const placeIndex = ref(0);
 
+    // placeIndex => renderIndex
+    const renderIndexArr = [0, 1, 2, 5, 8, 7, 6, 3, 4];
+
     const probabilityTotal = computed(() => {
       let count = 0;
       state.prizePoolData.forEach((item) => {
@@ -115,7 +118,7 @@ export default {
       getPrizePool()
         .then((res) => {
           res.data.data.forEach((item) => {
-            state.prizePoolData[item.place_index] = item;
+            state.prizePoolData[renderIndexArr[item.place_index]] = item;
           });
           state.showMessage = true;
         })
@@ -151,12 +154,12 @@ export default {
       }).then(() => {
         setPrizePool({
           ...obj,
-          ...{ is_active: 0, probability: 0 },
+          ...{ is_active: 0, probability: 0, place_index: -1 },
         })
           .then((res) => {
             if (res.data.code === 200) {
               ElMessage.success('删除成功！');
-              state.prizePoolData[obj.place_index] = 0;
+              state.prizePoolData[renderIndexArr[obj.place_index]] = 0;
               getPrizePoolData();
             }
           })
@@ -185,6 +188,7 @@ export default {
     return {
       ...toRefs(state),
       probabilityTotal,
+      placeIndexArr: [0, 1, 2, 7, 8, 3, 6, 5, 4],
       handleDelete,
       handleAdd,
       handleSetPrizePool,
