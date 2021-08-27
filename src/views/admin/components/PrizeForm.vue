@@ -30,6 +30,7 @@
 <script>
 import { reactive, toRefs } from 'vue';
 import { addPrize } from '@/apis/prize';
+import { ElMessage } from 'element-plus';
 
 export default {
   setup(props, {emit}) {
@@ -43,7 +44,11 @@ export default {
     const handleSubmit = () => {
       addPrize(state.form)
         .then(res => {
-          console.log(res);
+          if (res.data.code === 200) {
+            ElMessage.success('新增奖品成功！');
+            handleCancel();
+            emit('reset')
+          }
         })
         .catch()
     };

@@ -42,9 +42,9 @@
 
     <div class="btn-box m-t-16">
       <el-button size="small" @click="handleCancel">取消</el-button>
-      <el-button size="small" type="primary" @click="handleSure"
-        >确定</el-button
-      >
+      <el-button size="small" type="primary" @click="handleSure">
+        确定
+      </el-button>
     </div>
   </div>
 </template>

@@ -45,7 +45,7 @@
       v-if="dialogForm"
       :close-on-click-modal="false"
     >
-      <PrizeForm @close="dialogForm = false" />
+      <PrizeForm @close="dialogForm = false" @reset="handleReset" />
     </el-dialog>
   </div>
 </template>
@@ -98,6 +98,11 @@ export default {
       state.dialogForm = true;
     };
 
+    const handleReset = () => {
+      state.pagination.page = 1;
+      getPrisesData();
+    };
+
     onMounted(() => {
       getPrisesData();
     });
@@ -107,6 +112,7 @@ export default {
       handleCurrentChange,
       handleEdit,
       handleAdd,
+      handleReset,
     };
   },
 };
