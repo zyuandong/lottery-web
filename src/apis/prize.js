@@ -12,10 +12,18 @@ export const getPrizes = (params) => {
   });
 };
 
-export const getPrizePools = (params) => {
+export const getPrizePool = (params) => {
   return request({
-    url: `${context}/prize_pools`,
+    url: `${context}/get_prize_pool`,
     method: 'get',
     params
+  })
+}
+
+export const setPrizePool = (data) => {
+  return request({
+    url: `${context}/set_prize_pool`,
+    method: 'put',
+    data
   })
 }

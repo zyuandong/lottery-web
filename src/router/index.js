@@ -52,7 +52,7 @@ export const asyncRoutes = {
       },
       {
         path: 'prizes/setting',
-        component: () => import('@/views/admin/SetPrizePools.vue'),
+        component: () => import('@/views/admin/PrizePool.vue'),
       },
       {
         path: 'award_record',

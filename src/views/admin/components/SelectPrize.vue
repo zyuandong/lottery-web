@@ -1,13 +1,12 @@
 <template>
-  <div id="prize">
-    <div class="control-box">
-      <div class="left">
-        <el-button type="primary" size="small" @click="handleAdd"
-          >添加</el-button
-        >
-      </div>
-    </div>
+  <div id="select-prize">
     <el-table :data="tableData">
+      <!-- <el-table-column type="selection" width="55"></el-table-column> -->
+      <el-table-column label="选择" align="center" width="55">
+        <template #default="scope">
+          <el-radio v-model="selected" :label="scope.row" v-if="!scope.row.is_active"></el-radio>
+        </template>
+      </el-table-column>
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="pic" label="图片"></el-table-column>
       <el-table-column prop="number" label="数量"></el-table-column>
@@ -25,38 +24,39 @@
           <el-tag v-else type="info">未激活</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <!-- <el-table-column label="操作">
         <template #default="scope">
           <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
 
     <Pagination
-      v-if="tableData.length"
+      v-if="tableData.length > pagination.pageSize"
       :pagination="pagination"
       @currentChange="handleCurrentChange"
     />
 
-    <el-dialog v-model="dialogForm" title="新增奖品"  width="500px" v-if="dialogForm">
-      <PrizeForm />
-    </el-dialog>
+    <div class="btn-box m-t-16">
+      <el-button size="small">取消</el-button>
+      <el-button size="small" type="primary" @click="handleSure">确定</el-button>
+    </div>
   </div>
 </template>
 
 <script>
-import { onMounted, reactive, toRefs } from 'vue';
+import { onMounted, reactive, toRefs, ref } from 'vue';
 import { getPrizes } from '@/apis/prize';
 import Pagination from '@/components/Pagination.vue';
-import PrizeForm from './components/PrizeForm.vue';
+// import PrizeForm from './components/PrizeForm.vue';
 
 export default {
   components: {
     Pagination,
-    PrizeForm,
+    // PrizeForm,
   },
 
-  setup() {
+  setup(props, {emit}) {
     const state = reactive({
       tableData: [],
       pagination: {
@@ -66,7 +66,10 @@ export default {
       },
       loading: false,
       dialogForm: false,
+      selected: null
     });
+
+    // const selected = ref('');
 
     const getPrisesData = () => {
       const { page, pageSize } = state.pagination;
@@ -86,11 +89,13 @@ export default {
       getPrisesData();
     };
 
-    const handleEdit = () => {};
-
-    const handleAdd = () => {
-      state.dialogForm = true;
+    const handleSure = () => {
+      emit('selectPrize', state.selected)
     };
+
+    // const handleAdd = () => {
+    //   state.dialogForm = true;
+    // };
 
     onMounted(() => {
       getPrisesData();
@@ -98,12 +103,22 @@ export default {
 
     return {
       ...toRefs(state),
+      // selected,
       handleCurrentChange,
-      handleEdit,
-      handleAdd,
+      handleSure
     };
   },
 };
 </script>
 
-<style></style>
+<style lang="scss">
+#select-prize {
+  table td {
+    .el-radio {
+      .el-radio__label {
+        display: none;
+      }
+    }
+  }
+}
+</style>
