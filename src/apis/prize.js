@@ -2,7 +2,13 @@ import request from '@/utils/request';
 
 const context = '/prizes';
 
-export const addPrize = () => {};
+export const addPrize = (data) => {
+  return request({
+    url: `${context}/add`,
+    method: 'post',
+    data
+  })
+};
 
 export const getPrizes = (params) => {
   return request({
