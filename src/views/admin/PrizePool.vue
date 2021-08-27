@@ -3,7 +3,7 @@
     <div class="lottery-panel">
       <div class="lottery-border">
         <el-row class="p-8">
-          <el-col v-for="(item, index) in prizePool" :key="index" :span="8">
+          <el-col v-for="(item, index) in prizePoolData" :key="index" :span="8">
             <div class="btn-lottery" v-if="index === 4"></div>
             <div class="prize-item" v-else>
               <el-button
@@ -37,8 +37,6 @@
       </div>
     </div>
 
-    <!-- <pre>{{ prizePool }}</pre> -->
-
     <el-dialog v-model="dialogSelectPrize" title="选择奖品">
       <SelectPrize v-if="dialogSelectPrize" @selectPrize="handleSetPrizePool" />
     </el-dialog>
@@ -57,7 +55,7 @@ export default {
   },
   setup() {
     const state = reactive({
-      prizePool: new Array(9).fill(0),
+      prizePoolData: new Array(9).fill(0),
       dialogSelectPrize: false,
     });
 
@@ -68,7 +66,7 @@ export default {
         .then((res) => {
           // console.log(res.data);
           res.data.data.forEach((item) => {
-            state.prizePool[item.place_index] = item;
+            state.prizePoolData[item.place_index] = item;
           });
         })
         .catch();
@@ -103,7 +101,7 @@ export default {
         .then((res) => {
           if (res.data.code === 200) {
             ElMessage.success('删除成功，请添加其他奖品！');
-            state.prizePool[obj.place_index] = 0;
+            state.prizePoolData[obj.place_index] = 0;
             getPrizePoolData();
           }
         })

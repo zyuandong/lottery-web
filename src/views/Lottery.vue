@@ -6,48 +6,28 @@
         <div class="lottery-panel">
           <div class="lottery-border">
             <el-row class="p-8">
-              <el-col :span="8">
-                <div class="prize-item item-1 is-active">
-                  <img src="../assets/260.jpg" alt="" />
-                  <div class="text">Switch</div>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="prize-item item-2">
-                  <img src="../assets/260.jpg" alt="" />
-                  <div class="text">Vue</div>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="prize-item item-3">
-                  <img src="../assets/260.jpg" alt="" />
-                  <!-- <img
-                    src="https://i.loli.net/2021/06/03/YNIqRlXbKo6ZEhp.png"
-                    alt=""
-                  /> -->
-                  <div class="text">苹果</div>
-                </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="prize-item item-4">4</div>
-              </el-col>
-              <el-col :span="8">
-                <div class="btn-lottery" @click="handleLottery()">
+              <el-col
+                v-for="(item, index) in prizePoolData"
+                :key="index"
+                :span="8"
+              >
+                <div
+                  class="btn-lottery"
+                  v-if="index === 4"
+                  @click="handleLottery()"
+                >
                   <div class="text-lottery">抽奖</div>
                   <div class="text">100 金币 / 次</div>
                 </div>
-              </el-col>
-              <el-col :span="8">
-                <div class="prize-item item-6">6</div>
-              </el-col>
-              <el-col :span="8">
-                <div class="prize-item item-7">7</div>
-              </el-col>
-              <el-col :span="8">
-                <div class="prize-item item-8">8</div>
-              </el-col>
-              <el-col :span="8">
-                <div class="prize-item item-9">9</div>
+
+                <div
+                  class="prize-item"
+                  v-else
+                  :class="[`item-${placeIndexArr[index]}`, {'is-active': index === 0}]"
+                >
+                  <!-- <img src="../assets/260.jpg" alt="" /> -->
+                  <div class="text" v-if="item">{{ item.name }}</div>
+                </div>
               </el-col>
             </el-row>
           </div>
@@ -61,23 +41,26 @@
 </template>
 
 <script>
-import { reactive, ref, toRefs, watch } from 'vue';
+import { onMounted, reactive, ref, toRefs, watch } from 'vue';
 import { lottery } from '@/apis/user';
+import { getPrizePool } from '@/apis/prize';
 
 export default {
   setup() {
     const state = reactive({
       user: JSON.parse(sessionStorage.getItem('user')),
+      prizePoolData: new Array(9).fill(0),
     });
 
-    const arr = [1, 2, 3, 6, 9, 8, 7, 4];
+    // const arr = [1, 2, 3, 6, 9, 8, 7, 4];
+    // const placeIndexArr = [0, 1, 2, 7, 8, 3, 6, 5, 4];
     let index = ref(0);
     let interval = null;
     let timeout = null;
     let stopWatch = null;
 
     const sendRequest = () => {
-      lottery({...state.user})
+      lottery({ ...state.user })
         .then((res) => {
           const keyIndex = res.data.data;
 
@@ -104,23 +87,36 @@ export default {
       if (!interval) {
         sendRequest();
         interval = setInterval(() => {
-          // console.log('inter', index);
           document
-            .querySelector(`.item-${arr[index.value]}`)
+            .querySelector(`.item-${index.value}`)
             .classList.remove('is-active');
 
           document
-            .querySelector(
-              `.item-${arr[index.value === 7 ? 0 : index.value + 1]}`
-            )
+            .querySelector(`.item-${index.value === 7 ? 0 : index.value + 1}`)
             .classList.add('is-active');
+
           index.value = index.value === 7 ? 0 : index.value + 1;
         }, 100);
       }
     };
 
+    const getPrizePoolData = () => {
+      getPrizePool()
+        .then((res) => {
+          res.data.data.forEach((item) => {
+            state.prizePoolData[item.place_index] = item;
+          });
+        })
+        .catch();
+    };
+
+    onMounted(() => {
+      getPrizePoolData();
+    });
+
     return {
       ...toRefs(state),
+      placeIndexArr: [0, 1, 2, 7, 8, 3, 6, 5, 4],
       handleLottery,
     };
   },
