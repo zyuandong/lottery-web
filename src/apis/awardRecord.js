@@ -9,3 +9,11 @@ export const getAwardRecord = (params) => {
     params
   })
 }
+
+export const getLatestAwardRecord = (params) => {
+  return request({
+    url: `${context}/latest`,
+    method: 'get',
+    params
+  })
+}
