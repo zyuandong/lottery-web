@@ -3,7 +3,11 @@
     <el-table :data="tableData">
       <el-table-column prop="user_name" label="用户"></el-table-column>
       <el-table-column prop="prize_name" label="奖品"></el-table-column>
-      <el-table-column prop="create_time" label="时间"></el-table-column>
+      <el-table-column prop="create_time" label="时间">
+        <template #default="scope">
+          {{ moment(scope.row.create_time).format('YYYY-MM-DD HH:mm:ss') }}
+        </template>
+      </el-table-column>
     </el-table>
 
     <Pagination
@@ -18,6 +22,7 @@
 import { onMounted, reactive, toRefs } from 'vue';
 import { getAwardRecord } from '@/apis/awardRecord';
 import Pagination from '@/components/Pagination.vue';
+import moment from 'moment';
 
 export default {
   components: {
@@ -57,6 +62,7 @@ export default {
     return {
       ...toRefs(state),
       handleCurrentChange,
+      moment
     };
   },
 };

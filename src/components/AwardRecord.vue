@@ -7,7 +7,7 @@
         v-for="(item, index) in tableData"
         :key="index"
       >
-        <div class="create-time">{{ item.create_time }}：</div>
+        <div class="create-time">{{ moment(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}：</div>
         <div>
           恭喜「 {{ item.user_name }} 」获得 「 {{ item.prize_name }} 」
         </div>
@@ -19,6 +19,7 @@
 <script>
 import { onMounted, reactive, toRefs } from 'vue';
 import { getLatestAwardRecord } from '@/apis/awardRecord';
+import moment from 'moment';
 
 export default {
   setup() {
@@ -47,6 +48,7 @@ export default {
 
     return {
       ...toRefs(state),
+      moment
     };
   },
 };
