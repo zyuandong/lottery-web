@@ -13,7 +13,7 @@
         </el-form-item>
 
         <el-form-item label="">
-          <el-input v-model="form.password" placeholder="密码"></el-input>
+          <el-input v-model="form.password" type="password" placeholder="密码"></el-input>
         </el-form-item>
       </el-form>
 
@@ -24,6 +24,8 @@
 
       <!-- <router-link to="/lottery">lottery</router-link> -->
     </div>
+
+    <div class="text-tip">注：密码未做加密处理，请不要使用常用账户、密码</div>
   </div>
 </template>
 
@@ -75,18 +77,27 @@ export default {
 <style lang="scss" scoped>
 #login {
   height: 100vh;
-  background-color: #ccc;
+  background-color: #3C6AF2;
   overflow: hidden;
+
+  h1 {
+    text-align: center;
+  }
 
   .login-panel {
     width: 3rem;
     height: 4rem;
-    background-color: #989898;
+    background-color: #DEE4FD;
     padding: 0.2rem;
     // border: 1px solid #000;
     border-radius: 0.04rem;
     box-shadow: 0 0 5px #000;
-    margin: 1rem auto;
+    margin: 1rem auto 0.16rem;
+  }
+
+  .text-tip {
+    width: 3.4rem;
+    margin: 0 auto;
   }
 }
 </style>

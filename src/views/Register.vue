@@ -13,7 +13,7 @@
         </el-form-item>
 
         <el-form-item label="">
-          <el-input v-model="form.password" placeholder="密码"></el-input>
+          <el-input v-model="form.password" type="password" placeholder="密码"></el-input>
         </el-form-item>
       </el-form>
 
@@ -22,13 +22,12 @@
           注册
         </el-button>
         <div class="m-t-8">
-          已有账号，去 <router-link to="/login">登录</router-link>
+          已有账号，去 <el-button type="text" @click="toPage('/login')">登录</el-button>
         </div>
       </div>
-      <!-- <div class="btn-box">
-        <span>已有账号，去 <router-link to="/login">登录</router-link></span>
-      </div> -->
     </div>
+
+    <div class="text-tip">注：密码未做加密处理，请不要使用常用账户、密码</div>
   </div>
 </template>
 
@@ -75,22 +74,31 @@ export default {
 <style lang="scss">
 #register {
   height: 100vh;
-  background-color: #ccc;
+  background-color: #3C6AF2;
   overflow: hidden;
+
+  h1 {
+    text-align: center;
+  }
 
   .register-panel {
     width: 3rem;
     height: 4rem;
-    background-color: #989898;
+    background-color: #DEE4FD;
     padding: 0.2rem;
     // border: 1px solid #000;
     border-radius: 0.04rem;
     box-shadow: 0 0 5px #000;
-    margin: 1rem auto;
+    margin: 1rem auto 0.16rem;
   }
 
   .register-btn {
     width: 100%;
+  }
+
+  .text-tip {
+    width: 3.4rem;
+    margin: 0 auto;
   }
 }
 </style>

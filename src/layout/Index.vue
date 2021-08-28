@@ -7,7 +7,7 @@
       <el-aside width="200px" v-if="isAdminPage">
         <Aside />
       </el-aside>
-      <el-main>
+      <el-main :class="{'lottery-page': !isAdminPage}">
         <router-view />
       </el-main>
     </el-container>
@@ -60,8 +60,15 @@ export default {
 .el-aside {
   background-color: #2e363f;
 }
+.el-main {
+  height: calc(100vh - 0.6rem);
+  overflow: auto;
+}
 .el-container {
   // height: calc(100vh - 0.6rem);
   height: 100vh;
+}
+.lottery-page {
+  background-color: #3B6AF1;
 }
 </style>

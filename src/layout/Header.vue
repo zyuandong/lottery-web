@@ -15,7 +15,7 @@
         <template #title>{{ user.name }}</template>
         <el-menu-item index="/admin/users" v-if="user.is_admin">系统管理</el-menu-item>
         <el-menu-item index="/lottery" v-if="user.is_admin">去抽奖</el-menu-item>
-        <el-menu-item @click="handleSignOut">退出</el-menu-item>
+        <el-menu-item index="/login" @click="handleSignOut">退出</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>
@@ -64,10 +64,6 @@ export default {
   .title {
     font-size: 0.2rem;
     margin: 0;
-  }
-
-  .el-menu {
-    float: right;
   }
 }
 </style>

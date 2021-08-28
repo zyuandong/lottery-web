@@ -173,6 +173,7 @@ export default {
   // background-color: #3b6af1;
   .message-box {
     width: 50%;
+    color: #fff;
     margin: 0.5rem auto 0.16rem;
   }
   .text-tip {
@@ -187,6 +188,7 @@ export default {
     background-color: #f2c889;
     padding: 0.16rem;
     border-radius: 0.04rem;
+    box-shadow: 0 0 0.15rem #000;
     margin: 0 auto;
 
     .lottery-border {
@@ -219,6 +221,7 @@ export default {
     }
 
     .btn-lottery {
+      cursor: pointer;
       background-color: #fdebd4;
 
       .text-lottery {

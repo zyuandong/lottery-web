@@ -14,3 +14,23 @@ body {
 textarea {
   resize: none !important;
 }
+
+.el-icon {
+  width: auto;
+}
+
+.el-menu {
+  border: none !important;
+
+  .el-submenu__title {
+    border: none !important;
+  }
+
+  li {
+    border: none !important;
+  }
+}
+
+.el-popper {
+  border: none !important;
+}

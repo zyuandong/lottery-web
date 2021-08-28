@@ -7,8 +7,10 @@
         v-for="(item, index) in tableData"
         :key="index"
       >
-        <div class="creat-time">{{ item.create_time }}：</div>
-        <div>恭喜「 {{ item.user_name }} 」获得 「 {{ item.prize_name }} 」</div>
+        <div class="create-time">{{ item.create_time }}：</div>
+        <div>
+          恭喜「 {{ item.user_name }} 」获得 「 {{ item.prize_name }} 」
+        </div>
       </div>
     </div>
   </div>
@@ -50,13 +52,14 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #award-record {
   height: calc(100vh - 1.32rem);
   background-color: #f2c889;
   overflow: auto;
   padding: 0.16rem;
   border-radius: 0.04rem;
+  box-shadow: 0 0 0.15rem #000;
 
   .title {
     margin: 0 0 0.16rem 0;
@@ -65,6 +68,10 @@ export default {
 
   .award-record-item {
     font-size: 0.12rem;
+    .create-time {
+      color: #939da8;
+      font-size: 0.12rem;
+    }
   }
 }
 </style>
