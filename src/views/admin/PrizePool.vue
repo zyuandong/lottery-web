@@ -16,7 +16,7 @@
       ></el-alert>
 
       <div class="text-error m-t-8" v-if="probabilityTotal != 1">
-        当前概率总和为：{{ probabilityTotal }}
+        当前概率总和为：{{ Math.round(probabilityTotal * 100) / 100 }}
       </div>
     </div>
 
