@@ -13,17 +13,19 @@ const getUserData = () => {
   const user = sessionStorage.getItem('user')
     ? JSON.parse(sessionStorage.getItem('user'))
     : {};
+
   if (!user.oid) {
     sessionStorage.removeItem('user');
     router.push('/login');
+  } else {
+    getUser({ oid: user.oid })
+      .then((res) => {
+        if (res.data.code === 200) {
+          sessionStorage.setItem('user', JSON.stringify(res.data.data));
+        }
+      })
+      .catch();
   }
-  getUser({ oid: user.oid })
-    .then((res) => {
-      if (res.data.code === 200) {
-        sessionStorage.setItem('user', JSON.stringify(res.data.data));
-      }
-    })
-    .catch();
 };
 
 onMounted(() => {
