@@ -12,7 +12,7 @@
       <el-submenu index="/admin/prizes">
         <template #title>奖品管理</template>
         <el-menu-item index="/admin/prizes/list">奖品列表</el-menu-item>
-        <el-menu-item index="/admin/prizes/setting">奖品池</el-menu-item>
+        <el-menu-item index="/admin/prizes/setting">奖池设置</el-menu-item>
       </el-submenu>
       <el-menu-item index="/admin/award_record">获奖记录</el-menu-item>
     </el-menu>

@@ -2,8 +2,7 @@
   <div id="lottery">
     <el-row>
       <el-col :sm="20">
-        <div>金币数量：{{ user.gold_coin_num }}</div>
-        <!-- <div>{{ probabilityTotal }}</div> -->
+        <div class="message-box">当前金币数量：{{ user.gold_coin_num }}</div>
         <div class="lottery-panel">
           <div class="lottery-border">
             <el-row class="p-8">
@@ -36,6 +35,9 @@
             </el-row>
           </div>
         </div>
+        <div class="text-tip" v-if="showMessage && probabilityTotal != 1">
+          注：当前奖池设置有误，抽奖不扣除金币，获奖结果不做记录。待管理员设置正确之后才能正常使用抽奖功能！
+        </div>
       </el-col>
       <el-col :sm="4">
         <!-- <div class="award-record-panel">记录</div> -->
@@ -48,12 +50,14 @@
 import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue';
 import { lottery } from '@/apis/user';
 import { getPrizePool } from '@/apis/prize';
+import { ElMessage } from 'element-plus';
 
 export default {
   setup() {
     const state = reactive({
       user: JSON.parse(sessionStorage.getItem('user')),
       prizePoolData: new Array(9).fill(0),
+      showMessage: false
     });
 
     let index = ref(0);
@@ -80,14 +84,14 @@ export default {
       }
       lottery({ ...state.user })
         .then((res) => {
-          const placeIndex = res.data.data;
+          const {placeIndex, prize} = res.data.data;
 
-          stopAnimation(placeIndex)
+          stopAnimation(placeIndex, prize)
         })
         .catch();
     };
 
-    const stopAnimation = (placeIndex) => {
+    const stopAnimation = (placeIndex, prize) => {
       clearTimeout(timeout);
 
       timeout = setTimeout(() => {
@@ -96,6 +100,12 @@ export default {
           (val) => {
             if (val === placeIndex) {
               clearInterval(interval);
+              if (prize && prize.type) {
+                ElMessage.success(`恭喜，「${state.user.name}」获得奖品「${prize.name}」！`)
+                if (prize.type === 1 && !state.user.is_admin) {
+                  state.user.gold_coin_num += prize.number;
+                }
+              }
               interval = null;
               // stop watch: index.value
               stopWatch();
@@ -106,8 +116,12 @@ export default {
     };
 
     const handleLottery = () => {
+      if (state.user.gold_coin_num < 100) {
+        return ElMessage.warning('抱歉，金币数量不足 100，无法参与抽奖！')
+      }
       if (!interval) {
         sendRequest();
+        if (probabilityTotal.value === 1 && !state.user.is_admin) state.user.gold_coin_num -= 100;
         interval = setInterval(() => {
           document
             .querySelector(`.item-${index.value}`)
@@ -126,6 +140,7 @@ export default {
       getPrizePool()
         .then((res) => {
           res.data.data.forEach((item) => {
+            state.showMessage = true;
             state.prizePoolData[renderIndexArr[item.place_index]] = item;
           });
         })
@@ -148,14 +163,23 @@ export default {
 
 <style lang="scss" scoped>
 #lottery {
+  .message-box {
+    width: 50%;
+    margin: 0.5rem auto 0.16rem;
+  }
+  .text-tip {
+    width: 50%;
+    margin: 0.32rem auto 0;
+  }
   .lottery-panel {
     width: 50%;
     min-width: 3.7rem;
+    box-sizing: border-box;
     text-align: center;
     background-color: #f2c889;
     padding: 0.16rem;
     border-radius: 0.04rem;
-    margin: 0.5rem auto;
+    margin: 0 auto;
 
     .lottery-border {
       background-color: #df7823;
