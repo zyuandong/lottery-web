@@ -7,9 +7,11 @@ import 'element-plus/packages/theme-chalk/src/index.scss';
 import '@/styles/index.scss';
 
 // 刷新时，动态添加 admin 路由
-const user = JSON.parse(sessionStorage.getItem('user'));
+const user = sessionStorage.getItem('user')
+  ? JSON.parse(sessionStorage.getItem('user'))
+  : {};
 if (user && user.is_admin) {
-  router.addRoute(asyncRoutes.admin)
+  router.addRoute(asyncRoutes.admin);
 }
 
 const app = createApp(App);

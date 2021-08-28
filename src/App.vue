@@ -3,8 +3,32 @@
 </template>
 
 <script setup>
-// This starter template is using Vue 3 experimental <script setup> SFCs
-// Check out https://github.com/vuejs/rfcs/blob/master/active-rfcs/0040-script-setup.md
+import { onMounted } from 'vue';
+import { getUser } from '@/apis/user';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const getUserData = () => {
+  const user = sessionStorage.getItem('user')
+    ? JSON.parse(sessionStorage.getItem('user'))
+    : {};
+  if (!user.oid) {
+    sessionStorage.removeItem('user');
+    router.push('/login');
+  }
+  getUser({ oid: user.oid })
+    .then((res) => {
+      if (res.data.code === 200) {
+        sessionStorage.setItem('user', JSON.stringify(res.data.data));
+      }
+    })
+    .catch();
+};
+
+onMounted(() => {
+  getUserData();
+});
 </script>
 
 <style lang="scss">

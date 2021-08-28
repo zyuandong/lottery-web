@@ -26,10 +26,17 @@ export const getUsers = (params) => {
   });
 };
 
+export const getUser = (params) => {
+  return request({
+    url: `${context}/${params.oid}`,
+    method: 'get',
+  });
+};
+
 export const lottery = (data) => {
   return request({
     url: `${context}/lottery`,
     method: 'post',
-    data
-  })
-}
+    data,
+  });
+};
