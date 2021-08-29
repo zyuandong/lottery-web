@@ -4,7 +4,7 @@
       <el-col :sm="19">
         <div class="message-box">
           当前金币数量：
-          <img class="gold-coin" src="/lottery_service_api/images/gold_coin.svg" alt="" />
+          <img class="gold-coin" src="@/assets/svg/gold_coin.svg" alt="" />
           x {{ user.gold_coin_num }}
         </div>
 
@@ -28,11 +28,7 @@
                   :style="{ height: `${prizeItemHeight}px` }"
                   :class="[`item-${placeIndexArr[index]}`, { 'is-active': index === 0 }]"
                 >
-                  <img
-                    v-if="item.type === 1"
-                    src="/lottery_service_api/images/gold_coin.svg"
-                    alt=""
-                  />
+                  <img v-if="item.type === 1" src="@/assets/svg/gold_coin.svg" alt="" />
                   <img
                     v-if="item.type === 2 && item.pic"
                     :src="`/lottery_service_api/${item.pic}`"
@@ -74,7 +70,6 @@ export default {
       showMessage: false,
       latestMessage: null,
     });
-
 
     // index: 抽奖动效所需 index
     let index = ref(0);
@@ -213,7 +208,7 @@ export default {
           if (second === 0) {
             clearInterval(timer);
             loadingInstance.close();
-            location.reload()
+            location.reload();
             // getPrizePoolData()
           }
         }, 1000);
