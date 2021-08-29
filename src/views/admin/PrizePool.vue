@@ -200,6 +200,7 @@ export default {
   .lottery-panel {
     width: 50%;
     min-width: 3.7rem;
+    max-width: 7.5rem;
     text-align: center;
     background-color: #f2c889;
     padding: 0.16rem;
@@ -246,6 +247,8 @@ export default {
 
   .text-tip {
     width: 50%;
+    min-width: 3.7rem;
+    max-width: 7.5rem;
     margin: 0 auto;
   }
 }
