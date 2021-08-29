@@ -60,7 +60,7 @@
 import { computed, onBeforeUnmount, onMounted, reactive, ref, toRefs, watch } from 'vue';
 import { lottery } from '@/apis/user';
 import { getPrizePool } from '@/apis/prize';
-import { ElMessage } from 'element-plus';
+import { ElLoading, ElMessage } from 'element-plus';
 import AwardRecord from '@/components/AwardRecord.vue';
 
 export default {
@@ -75,13 +75,15 @@ export default {
       latestMessage: null,
     });
 
+
+    // index: 抽奖动效所需 index
     let index = ref(0);
     let prizeItemHeight = ref(0);
 
+    const socket = io();
     let interval = null;
     let timeout = null;
     let stopWatch = null;
-    const socket = io();
 
     // placeIndex => renderIndex
     const renderIndexArr = [0, 1, 2, 5, 8, 7, 6, 3, 4];
@@ -186,21 +188,41 @@ export default {
         prizeItemHeight.value = Math.round($el.offsetWidth * 70) / 100;
       });
 
+      // 登录消息
       socket.on('MSG_LOGIN', (res) => {
         ElMessage.info(res);
       });
+
+      // 抽奖消息
       socket.on('MSG_LOTTERY', (res) => {
         ElMessage.info(res);
       });
+
+      // 更新奖池消息
       socket.on('MSG_UPDATE_PRIZE_POOL', (res) => {
-        console.log('io', res);
-        ElMessage.info(res);
+        let second = 5;
+
+        const loadingInstance = ElLoading.service({
+          target: document.querySelector('#lottery'),
+          text: `正在更新奖池，${second}s 后将自动刷新页面`,
+        });
+
+        const timer = setInterval(() => {
+          second--;
+          loadingInstance.setText(`正在更新奖池，${second}s 后将自动刷新页面`);
+          if (second === 0) {
+            clearInterval(timer);
+            loadingInstance.close();
+            location.reload()
+            // getPrizePoolData()
+          }
+        }, 1000);
       });
     });
 
     onBeforeUnmount(() => {
       socket.disconnect();
-    })
+    });
 
     return {
       ...toRefs(state),
@@ -215,6 +237,9 @@ export default {
 
 <style lang="scss" scoped>
 #lottery {
+  margin: -0.2rem;
+  padding: 0.2rem;
+
   .message-box {
     width: 50%;
     min-width: 3.7rem;

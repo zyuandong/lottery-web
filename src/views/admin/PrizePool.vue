@@ -52,9 +52,7 @@
                 v-if="item"
                 @change="handleChangeProbability(item)"
               ></el-input>
-              <div class="text-error" v-if="item.probability < 0">
-                概率不能小于 0
-              </div>
+              <div class="text-error" v-if="item.probability < 0">概率不能小于 0</div>
             </div>
           </el-col>
         </el-row>
@@ -70,11 +68,7 @@
       </ul>
     </div>
 
-    <el-dialog
-      v-model="dialogSelectPrize"
-      title="选择奖品"
-      :close-on-click-modal="false"
-    >
+    <el-dialog v-model="dialogSelectPrize" title="选择奖品" :close-on-click-modal="false">
       <SelectPrize
         v-if="dialogSelectPrize"
         @selectPrize="handleSetPrizePool"
@@ -103,6 +97,8 @@ export default {
 
     const placeIndex = ref(0);
 
+    const socket = io();
+
     // placeIndex => renderIndex
     const renderIndexArr = [0, 1, 2, 5, 8, 7, 6, 3, 4];
 
@@ -117,6 +113,7 @@ export default {
     const getPrizePoolData = () => {
       getPrizePool()
         .then((res) => {
+          socket.emit('MSG_UPDATE_PRIZE_POOL');
           res.data.data.forEach((item) => {
             state.prizePoolData[renderIndexArr[item.place_index]] = item;
           });
