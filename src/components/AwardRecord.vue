@@ -9,7 +9,7 @@
       >
         <div class="create-time">{{ moment(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}：</div>
         <div>
-          恭喜「 {{ item.user_name }} 」获得 「 {{ item.prize_name }} 」
+          恭喜「 {{ item.user_name }} 」获得奖品 「 {{ item.prize_name }} 」
         </div>
       </div>
     </div>
@@ -56,6 +56,7 @@ export default {
 
 <style lang="scss" scoped>
 #award-record {
+  max-width: 3rem;
   height: calc(100vh - 1.32rem);
   background-color: #f2c889;
   overflow: auto;

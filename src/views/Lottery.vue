@@ -4,7 +4,11 @@
       <el-col :sm="19">
         <div class="message-box">
           当前金币数量：
-          <img class="gold-coin" src="/lottery_service_api/images/gold_coin.svg" alt="" />
+          <img
+            class="gold-coin"
+            src="/lottery_service_api/images/gold_coin.svg"
+            alt=""
+          />
           x {{ user.gold_coin_num }}
         </div>
 
@@ -19,6 +23,7 @@
                 <div
                   class="btn-lottery"
                   v-if="index === 4"
+                  :style="{ height: `${prizeItemHeight}px` }"
                   @click="handleLottery()"
                 >
                   <div class="text-lottery">抽奖</div>
@@ -28,14 +33,24 @@
                 <div
                   class="prize-item"
                   v-else
+                  :style="{ height: `${prizeItemHeight}px` }"
                   :class="[
                     `item-${placeIndexArr[index]}`,
                     { 'is-active': index === 0 },
                   ]"
                 >
-                  <!-- <img src="../assets/260.jpg" alt="" /> -->
-                  <img v-if="item.type === 1" src="/lottery_service_api/images/gold_coin.svg" alt="">
+                  <img
+                    v-if="item.type === 1"
+                    src="/lottery_service_api/images/gold_coin.svg"
+                    alt=""
+                  />
+                  <img
+                    v-if="item.type === 2 && item.pic"
+                    :src="`/lottery_service_api/${item.pic}`"
+                    alt=""
+                  />
                   <div class="text" v-if="item">{{ item.name }}</div>
+                  <div class="text" v-else>祝你好运</div>
                 </div>
               </el-col>
             </el-row>
@@ -71,6 +86,8 @@ export default {
     });
 
     let index = ref(0);
+
+    let prizeItemHeight = ref(0);
     let interval = null;
     let timeout = null;
     let stopWatch = null;
@@ -162,12 +179,26 @@ export default {
 
     onMounted(() => {
       getPrizePoolData();
+
+      const $el = document.querySelector('.prize-item');
+      // console.log($el);
+      // console.log($el.offsetWidth);
+      prizeItemHeight.value = Math.round($el.offsetWidth * 70) / 100;
+      window.addEventListener('resize', () => {
+        // console.log(333);
+
+        // const height = $el.offsetWidth * 0.7;
+        // console.log($el.offsetWidth);
+        // console.log($el.offsetWidth * 0.7);
+        prizeItemHeight.value = Math.round($el.offsetWidth * 70) / 100;
+      });
     });
 
     return {
       ...toRefs(state),
       probabilityTotal,
       placeIndexArr: [0, 1, 2, 7, 8, 3, 6, 5, 4],
+      prizeItemHeight,
       handleLottery,
     };
   },
@@ -176,9 +207,10 @@ export default {
 
 <style lang="scss" scoped>
 #lottery {
-  // background-color: #3b6af1;
   .message-box {
     width: 50%;
+    min-width: 3.7rem;
+    max-width: 7.5rem;
     color: #fff;
     margin: 0.5rem auto 0.16rem;
 
@@ -189,11 +221,14 @@ export default {
   }
   .text-tip {
     width: 50%;
+    min-width: 3.7rem;
+    max-width: 7.5rem;
     margin: 0.32rem auto 0;
   }
   .lottery-panel {
     width: 50%;
     min-width: 3.7rem;
+    max-width: 7.5rem;
     box-sizing: border-box;
     text-align: center;
     background-color: #f2c889;
@@ -209,9 +244,13 @@ export default {
 
     .prize-item,
     .btn-lottery {
-      height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      // height: 0;
       background-color: #fff;
-      padding-bottom: 70%;
+      // padding-bottom: 70%;
       border-radius: 0.03rem;
       margin: 0.04rem;
       overflow: hidden;
@@ -222,8 +261,7 @@ export default {
 
       img {
         max-width: 50%;
-        max-height: 0.6rem;
-        margin: 18% auto 0.08rem;
+        max-height: 50%;
       }
 
       .text {
@@ -236,7 +274,7 @@ export default {
       background-color: #fdebd4;
 
       .text-lottery {
-        margin-top: calc(35% - 0.19rem);
+        font-size: 0.2rem;
       }
     }
   }
