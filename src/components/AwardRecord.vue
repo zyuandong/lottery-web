@@ -67,6 +67,7 @@ export default {
   padding: 0.16rem;
   border-radius: 0.04rem;
   box-shadow: 0 0 0.15rem #000;
+  margin: 0 auto;
 
   .title {
     margin: 0 0 0.16rem 0;

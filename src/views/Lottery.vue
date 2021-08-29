@@ -1,7 +1,7 @@
 <template>
   <div id="lottery">
     <el-row>
-      <el-col :sm="19">
+      <el-col class="m-b-24" :sm="19">
         <div class="message-box">
           当前金币数量：
           <img class="gold-coin" src="@/assets/svg/gold_coin.svg" alt="" />
