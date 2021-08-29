@@ -4,22 +4,14 @@
       <el-col :sm="19">
         <div class="message-box">
           当前金币数量：
-          <img
-            class="gold-coin"
-            src="/lottery_service_api/images/gold_coin.svg"
-            alt=""
-          />
+          <img class="gold-coin" src="/lottery_service_api/images/gold_coin.svg" alt="" />
           x {{ user.gold_coin_num }}
         </div>
 
         <div class="lottery-panel">
           <div class="lottery-border">
             <el-row class="p-8">
-              <el-col
-                v-for="(item, index) in prizePoolData"
-                :key="index"
-                :span="8"
-              >
+              <el-col v-for="(item, index) in prizePoolData" :key="index" :span="8">
                 <div
                   class="btn-lottery"
                   v-if="index === 4"
@@ -34,21 +26,10 @@
                   class="prize-item"
                   v-else
                   :style="{ height: `${prizeItemHeight}px` }"
-                  :class="[
-                    `item-${placeIndexArr[index]}`,
-                    { 'is-active': index === 0 },
-                  ]"
+                  :class="[`item-${placeIndexArr[index]}`, { 'is-active': index === 0 }]"
                 >
-                  <img
-                    v-if="item.type === 1"
-                    src="/lottery_service_api/images/gold_coin.svg"
-                    alt=""
-                  />
-                  <img
-                    v-if="item.type === 2 && item.pic"
-                    :src="`/lottery_service_api/${item.pic}`"
-                    alt=""
-                  />
+                  <img v-if="item.type === 1" src="/lottery_service_api/images/gold_coin.svg" alt="" />
+                  <img v-if="item.type === 2 && item.pic" :src="`/lottery_service_api/${item.pic}`" alt="" />
                   <div class="text" v-if="item">{{ item.name }}</div>
                   <div class="text" v-else>祝你好运</div>
                 </div>
@@ -61,7 +42,7 @@
         </div>
       </el-col>
       <el-col :sm="5">
-        <AwardRecord />
+        <AwardRecord :latestMessage="latestMessage" />
       </el-col>
     </el-row>
   </div>
@@ -83,14 +64,16 @@ export default {
       user: JSON.parse(sessionStorage.getItem('user')),
       prizePoolData: new Array(9).fill(0),
       showMessage: false,
+      latestMessage: null,
     });
 
     let index = ref(0);
-
     let prizeItemHeight = ref(0);
+
     let interval = null;
     let timeout = null;
     let stopWatch = null;
+    const socket = io();
 
     // placeIndex => renderIndex
     const renderIndexArr = [0, 1, 2, 5, 8, 7, 6, 3, 4];
@@ -128,12 +111,20 @@ export default {
             if (val === placeIndex) {
               clearInterval(interval);
               if (prize && prize.type) {
-                ElMessage.success(
-                  `恭喜，「${state.user.name}」获得奖品「${prize.name}」！`
-                );
+                ElMessage.success(`恭喜，「${state.user.name}」获得奖品「${prize.name}」！`);
                 if (prize.type === 1 && !state.user.is_admin) {
                   state.user.gold_coin_num += prize.number;
                 }
+
+                // 动态更新获奖记录面板
+                state.latestMessage = {
+                  create_time: new Date(),
+                  user_name: state.user.name,
+                  prize_name: prize.name,
+                };
+
+                // 发送 socket 消息
+                socket.emit('MSG_LOTTERY', `恭喜，「${state.user.name}」获得奖品「${prize.name}」！`);
               }
               interval = null;
               // stop watch: index.value
@@ -150,16 +141,11 @@ export default {
       }
       if (!interval) {
         sendRequest();
-        if (probabilityTotal.value === 1 && !state.user.is_admin)
-          state.user.gold_coin_num -= 100;
+        if (probabilityTotal.value === 1 && !state.user.is_admin) state.user.gold_coin_num -= 100;
         interval = setInterval(() => {
-          document
-            .querySelector(`.item-${index.value}`)
-            .classList.remove('is-active');
+          document.querySelector(`.item-${index.value}`).classList.remove('is-active');
 
-          document
-            .querySelector(`.item-${index.value === 7 ? 0 : index.value + 1}`)
-            .classList.add('is-active');
+          document.querySelector(`.item-${index.value === 7 ? 0 : index.value + 1}`).classList.add('is-active');
 
           index.value = index.value === 7 ? 0 : index.value + 1;
         }, 100);
@@ -181,16 +167,20 @@ export default {
       getPrizePoolData();
 
       const $el = document.querySelector('.prize-item');
-      // console.log($el);
-      // console.log($el.offsetWidth);
       prizeItemHeight.value = Math.round($el.offsetWidth * 70) / 100;
-      window.addEventListener('resize', () => {
-        // console.log(333);
 
-        // const height = $el.offsetWidth * 0.7;
-        // console.log($el.offsetWidth);
-        // console.log($el.offsetWidth * 0.7);
+      window.addEventListener('resize', () => {
         prizeItemHeight.value = Math.round($el.offsetWidth * 70) / 100;
+      });
+
+      socket.on('MSG_LOGIN', (res) => {
+        console.log('io', res);
+      });
+      socket.on('MSG_LOTTERY', (res) => {
+        ElMessage.info(res)
+      });
+      socket.on('MSG_UPDATE_PRIZE_POOL', (res) => {
+        console.log('io', res);
       });
     });
 

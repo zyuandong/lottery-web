@@ -2,27 +2,26 @@
   <div id="award-record">
     <div>
       <h1 class="title">获奖记录</h1>
-      <div
-        class="award-record-item m-b-16"
-        v-for="(item, index) in tableData"
-        :key="index"
-      >
-        <div class="create-time">{{ moment(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}：</div>
-        <div>
-          恭喜「 {{ item.user_name }} 」获得奖品 「 {{ item.prize_name }} 」
+      <div class="award-record-item m-b-16" v-for="(item, index) in tableData" :key="index">
+        <div class="create-time">
+          {{ moment(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}：
         </div>
+        <div>恭喜「 {{ item.user_name }} 」获得奖品 「 {{ item.prize_name }} 」</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { onMounted, reactive, toRefs } from 'vue';
+import { onMounted, reactive, toRefs, watch } from 'vue';
 import { getLatestAwardRecord } from '@/apis/awardRecord';
 import moment from 'moment';
 
 export default {
-  setup() {
+  props: {
+    latestMessage: Object,
+  },
+  setup(props) {
     const state = reactive({
       tableData: [],
       pagination: {
@@ -31,6 +30,11 @@ export default {
         total: 0,
       },
     });
+
+    watch(
+      () => props.latestMessage,
+      (val) => (state.tableData = [props.latestMessage].concat(state.tableData))
+    );
 
     const getWardRecordData = () => {
       getLatestAwardRecord()
@@ -48,7 +52,7 @@ export default {
 
     return {
       ...toRefs(state),
-      moment
+      moment,
     };
   },
 };
