@@ -36,8 +36,8 @@ export default {
 
     const state = reactive({
       form: {
-        name: 'admin',
-        password: '123456',
+        name: '',
+        password: '',
       },
     });
 
