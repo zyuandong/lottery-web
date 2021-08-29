@@ -2,7 +2,12 @@
   <div id="lottery">
     <el-row>
       <el-col :sm="19">
-        <div class="message-box">当前金币数量：{{ user.gold_coin_num }}</div>
+        <div class="message-box">
+          当前金币数量：
+          <img class="gold-coin" src="/lottery_service_api/images/gold_coin.svg" alt="" />
+          x {{ user.gold_coin_num }}
+        </div>
+
         <div class="lottery-panel">
           <div class="lottery-border">
             <el-row class="p-8">
@@ -29,6 +34,7 @@
                   ]"
                 >
                   <!-- <img src="../assets/260.jpg" alt="" /> -->
+                  <img v-if="item.type === 1" src="/lottery_service_api/images/gold_coin.svg" alt="">
                   <div class="text" v-if="item">{{ item.name }}</div>
                 </div>
               </el-col>
@@ -175,6 +181,11 @@ export default {
     width: 50%;
     color: #fff;
     margin: 0.5rem auto 0.16rem;
+
+    .gold-coin {
+      width: 0.2rem;
+      vertical-align: sub;
+    }
   }
   .text-tip {
     width: 50%;

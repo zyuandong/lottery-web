@@ -1,5 +1,5 @@
 <template>
-  <div id="prize">
+  <div id="prize-list">
     <div class="control-box">
       <div class="left">
         <el-button type="primary" size="small" @click="handleAdd">
@@ -9,7 +9,11 @@
     </div>
     <el-table :data="tableData">
       <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="pic" label="图片"></el-table-column>
+      <el-table-column prop="pic" label="图片">
+        <template #default="scope">
+          <img class="prize-pic" v-if="scope.row.pic" :src="'/lottery_service_api'+scope.row.pic">
+        </template>
+      </el-table-column>
       <el-table-column prop="number" label="数量"></el-table-column>
       <el-table-column prop="probability" label="概率"></el-table-column>
       <el-table-column label="类型">
@@ -118,4 +122,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss">
+#prize-list {
+  .prize-pic {
+    width: 0.6rem;
+  }
+}
+</style>
