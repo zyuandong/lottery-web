@@ -28,8 +28,16 @@
                   :style="{ height: `${prizeItemHeight}px` }"
                   :class="[`item-${placeIndexArr[index]}`, { 'is-active': index === 0 }]"
                 >
-                  <img v-if="item.type === 1" src="/lottery_service_api/images/gold_coin.svg" alt="" />
-                  <img v-if="item.type === 2 && item.pic" :src="`/lottery_service_api/${item.pic}`" alt="" />
+                  <img
+                    v-if="item.type === 1"
+                    src="/lottery_service_api/images/gold_coin.svg"
+                    alt=""
+                  />
+                  <img
+                    v-if="item.type === 2 && item.pic"
+                    :src="`/lottery_service_api/${item.pic}`"
+                    alt=""
+                  />
                   <div class="text" v-if="item">{{ item.name }}</div>
                   <div class="text" v-else>祝你好运</div>
                 </div>
@@ -49,7 +57,7 @@
 </template>
 
 <script>
-import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref, toRefs, watch } from 'vue';
 import { lottery } from '@/apis/user';
 import { getPrizePool } from '@/apis/prize';
 import { ElMessage } from 'element-plus';
@@ -124,7 +132,10 @@ export default {
                 };
 
                 // 发送 socket 消息
-                socket.emit('MSG_LOTTERY', `恭喜，「${state.user.name}」获得奖品「${prize.name}」！`);
+                socket.emit(
+                  'MSG_LOTTERY',
+                  `恭喜，「${state.user.name}」获得奖品「${prize.name}」！`
+                );
               }
               interval = null;
               // stop watch: index.value
@@ -145,7 +156,9 @@ export default {
         interval = setInterval(() => {
           document.querySelector(`.item-${index.value}`).classList.remove('is-active');
 
-          document.querySelector(`.item-${index.value === 7 ? 0 : index.value + 1}`).classList.add('is-active');
+          document
+            .querySelector(`.item-${index.value === 7 ? 0 : index.value + 1}`)
+            .classList.add('is-active');
 
           index.value = index.value === 7 ? 0 : index.value + 1;
         }, 100);
@@ -174,15 +187,20 @@ export default {
       });
 
       socket.on('MSG_LOGIN', (res) => {
-        console.log('io', res);
+        ElMessage.info(res);
       });
       socket.on('MSG_LOTTERY', (res) => {
-        ElMessage.info(res)
+        ElMessage.info(res);
       });
       socket.on('MSG_UPDATE_PRIZE_POOL', (res) => {
         console.log('io', res);
+        ElMessage.info(res);
       });
     });
+
+    onBeforeUnmount(() => {
+      socket.disconnect();
+    })
 
     return {
       ...toRefs(state),

@@ -2,12 +2,7 @@
   <div id="login">
     <div class="login-panel">
       <h1>登录</h1>
-      <el-form
-        ref="loginForm"
-        label-position="top"
-        label-width="60px"
-        :model="form"
-      >
+      <el-form ref="loginForm" label-position="top" label-width="60px" :model="form">
         <el-form-item label="">
           <el-input v-model="form.name" placeholder="用户名"></el-input>
         </el-form-item>
@@ -46,6 +41,8 @@ export default {
       },
     });
 
+    const socket = io();
+
     const toPage = (path) => router.push({ path });
 
     const handleLogin = () => {
@@ -56,6 +53,8 @@ export default {
               const user = res.data.data[0];
               sessionStorage.setItem('user', JSON.stringify(user));
               ElMessage.success('登录成功');
+              socket.emit('MSG_LOGIN', `用户「${user.name}」上线了！`);
+
               router.push({ path: '/lottery' });
             } else {
               ElMessage.error('用户名或密码错误！');
@@ -77,7 +76,7 @@ export default {
 <style lang="scss" scoped>
 #login {
   height: 100vh;
-  background-color: #3C6AF2;
+  background-color: #3c6af2;
   overflow: hidden;
 
   h1 {
@@ -87,7 +86,7 @@ export default {
   .login-panel {
     width: 3rem;
     height: 4rem;
-    background-color: #DEE4FD;
+    background-color: #dee4fd;
     padding: 0.2rem;
     // border: 1px solid #000;
     border-radius: 0.04rem;
