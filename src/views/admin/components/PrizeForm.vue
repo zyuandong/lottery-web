@@ -83,9 +83,7 @@ export default {
     };
 
     const handleSuccess = (res, file) => {
-      console.log(res.data);
       if (res.code === 200) {
-        debugger;
         imageUrl.value = URL.createObjectURL(file.raw);
         state.form.pic = res.data;
       }
