@@ -2,16 +2,19 @@
   <div id="prize-list">
     <div class="control-box">
       <div class="left">
-        <el-button type="primary" size="small" @click="handleAdd">
-          新增
-        </el-button>
+        <el-button type="primary" size="small" @click="handleAdd"> 新增 </el-button>
       </div>
     </div>
     <el-table :data="tableData">
       <el-table-column prop="name" label="名称"></el-table-column>
       <el-table-column prop="pic" label="图片">
         <template #default="scope">
-          <img class="prize-pic" v-if="scope.row.pic" :src="'/lottery_service_api/'+scope.row.pic">
+          <img class="prize-pic" v-if="scope.row.type === 1" src="@/assets/svg/gold_coin.svg" />
+          <img
+            class="prize-pic"
+            v-if="scope.row.type === 2 && scope.row.pic"
+            :src="'/lottery_service_api/' + scope.row.pic"
+          />
         </template>
       </el-table-column>
       <el-table-column prop="number" label="数量"></el-table-column>
