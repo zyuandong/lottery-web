@@ -6,7 +6,7 @@
         <div class="create-time">
           {{ moment(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}：
         </div>
-        <div>恭喜「 {{ item.user_name }} 」获得奖品 「 {{ item.prize_name }} 」</div>
+        <div>恭喜「 {{ item.user_name }} 」获得奖品：「 {{ item.prize_name }} 」</div>
       </div>
     </div>
   </div>

@@ -1,5 +1,8 @@
 <template>
   <div id="lottery">
+    <div class="barrage-area">
+      <Barrage :message="bulletMessage" />
+    </div>
     <el-row>
       <el-col class="m-b-24" :sm="19">
         <div class="message-box">
@@ -58,10 +61,12 @@ import { lottery } from '@/apis/user';
 import { getPrizePool } from '@/apis/prize';
 import { ElLoading, ElMessage } from 'element-plus';
 import AwardRecord from '@/components/AwardRecord.vue';
+import Barrage from '@/components/Barrage.vue';
 
 export default {
   components: {
     AwardRecord,
+    Barrage,
   },
   setup() {
     const state = reactive({
@@ -69,6 +74,7 @@ export default {
       prizePoolData: new Array(9).fill(0),
       showMessage: false,
       latestMessage: null,
+      bulletMessage: null
     });
 
     // index: 抽奖动效所需 index
@@ -131,7 +137,7 @@ export default {
                 // 发送 socket 消息
                 socket.emit(
                   'MSG_LOTTERY',
-                  `恭喜，「${state.user.name}」获得奖品「${prize.name}」！`
+                  `恭喜「${state.user.name}」获得奖品：「${prize.name}」！`
                 );
               }
               interval = null;
@@ -185,12 +191,20 @@ export default {
 
       // 登录消息
       socket.on('MSG_LOGIN', (res) => {
-        ElMessage.info(res);
+        // ElMessage.info(res);
+        state.bulletMessage = {
+          type: 'MSG_LOGIN',
+          message: res
+        }
       });
 
       // 抽奖消息
       socket.on('MSG_LOTTERY', (res) => {
-        ElMessage.info(res);
+        // ElMessage.info(res);
+        state.bulletMessage = {
+          type: 'MSG_LOTTERY',
+          message: res
+        }
       });
 
       // 更新奖池消息
@@ -308,6 +322,16 @@ export default {
   }
   .award-record-panel {
     border: 1px solid #ccc;
+  }
+
+  .barrage-area {
+    height: 2rem;
+    // background-color: rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: absolute;
+    top: 0.6rem;
+    left: 0;
+    right: 0;
   }
 }
 </style>
