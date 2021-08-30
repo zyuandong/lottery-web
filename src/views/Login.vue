@@ -2,7 +2,7 @@
   <div id="login">
     <div class="login-panel">
       <h1>登录</h1>
-      <el-form ref="loginForm" label-position="top" label-width="60px" :model="form">
+      <el-form ref="loginForm" label-position="top" label-width="60px" :model="form" @keyup.enter="handleLogin">
         <el-form-item label="">
           <el-input v-model="form.name" placeholder="用户名"></el-input>
         </el-form-item>
