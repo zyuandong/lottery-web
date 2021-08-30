@@ -49,7 +49,7 @@
         </div>
       </el-col>
       <el-col :sm="5">
-        <AwardRecord :latestMessage="latestMessage" />
+        <AwardRecord :message="latestAwardRecord" />
       </el-col>
     </el-row>
   </div>
@@ -73,8 +73,8 @@ export default {
       user: JSON.parse(sessionStorage.getItem('user')),
       prizePoolData: new Array(9).fill(0),
       showMessage: false,
-      latestMessage: null,
-      bulletMessage: null
+      bulletMessage: null,
+      latestAwardRecord: null,
     });
 
     // index: 抽奖动效所需 index
@@ -122,22 +122,19 @@ export default {
             if (val === placeIndex) {
               clearInterval(interval);
               if (prize && prize.type) {
-                ElMessage.success(`恭喜，「${state.user.name}」获得奖品「${prize.name}」！`);
+                ElMessage.success(`恭喜你获得奖品：「${prize.name}」！`);
                 if (prize.type === 1 && !state.user.is_admin) {
                   state.user.gold_coin_num += prize.number;
                 }
 
-                // 动态更新获奖记录面板
-                state.latestMessage = {
-                  create_time: new Date(),
-                  user_name: state.user.name,
-                  prize_name: prize.name,
-                };
-
                 // 发送 socket 消息
                 socket.emit(
                   'MSG_LOTTERY',
-                  `恭喜「${state.user.name}」获得奖品：「${prize.name}」！`
+                  {
+                    create_time: new Date(),
+                    user_name: state.user.name,
+                    prize_name: prize.name,
+                  }
                 );
               }
               interval = null;
@@ -194,17 +191,21 @@ export default {
         // ElMessage.info(res);
         state.bulletMessage = {
           type: 'MSG_LOGIN',
-          message: res
-        }
+          message: res,
+        };
       });
 
       // 抽奖消息
       socket.on('MSG_LOTTERY', (res) => {
         // ElMessage.info(res);
+        const {user_name, prize_name} = res
         state.bulletMessage = {
           type: 'MSG_LOTTERY',
-          message: res
-        }
+          message: `恭喜「${user_name}」获得奖品：「${prize_name}」！`,
+        };
+
+        // 动态更新获奖记录面板
+        state.latestAwardRecord = res;
       });
 
       // 更新奖池消息

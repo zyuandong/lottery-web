@@ -19,7 +19,7 @@ import moment from 'moment';
 
 export default {
   props: {
-    latestMessage: Object,
+    message: Object,
   },
   setup(props) {
     const state = reactive({
@@ -32,8 +32,8 @@ export default {
     });
 
     watch(
-      () => props.latestMessage,
-      (val) => (state.tableData = [props.latestMessage].concat(state.tableData))
+      () => props.message,
+      (val) => (state.tableData = [props.message].concat(state.tableData))
     );
 
     const getWardRecordData = () => {
