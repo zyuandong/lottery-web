@@ -53,8 +53,8 @@ export default {
     position: absolute;
     z-index: 1;
 
-    animation: bullet 1 15s ease-out;
-    -webkit-animation: bullet 1 15s ease-out;
+    animation: bullet 1 20s ease-out;
+    -webkit-animation: bullet 1 20s ease-out;
 
     &.lottery {
       background-color: rgba(223, 120, 35, 0.7);
