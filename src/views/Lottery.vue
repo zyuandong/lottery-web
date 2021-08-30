@@ -88,7 +88,7 @@ export default {
       state.prizePoolData.forEach((item) => {
         if (item && item.probability >= 0) count += Number(item.probability);
       });
-      return count;
+      return Math.round(count * 100) / 100;
     });
 
     const sendRequest = () => {

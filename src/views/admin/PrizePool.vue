@@ -16,7 +16,7 @@
       ></el-alert>
 
       <div class="text-error m-t-8" v-if="probabilityTotal != 1">
-        当前概率总和为：{{ Math.round(probabilityTotal * 100) / 100 }}
+        当前概率总和为：{{ probabilityTotal }}
       </div>
     </div>
 
@@ -107,7 +107,7 @@ export default {
       state.prizePoolData.forEach((item) => {
         if (item && item.probability >= 0) count += Number(item.probability);
       });
-      return count;
+      return Math.round(count * 100) / 100;
     });
 
     const getPrizePoolData = () => {
