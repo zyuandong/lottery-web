@@ -43,6 +43,17 @@
               </el-col>
             </el-row>
           </div>
+          <div
+            class="dot"
+            v-for="i in 16"
+            :key="i"
+            :class="[
+              `dot-${i}`,
+              { origin: [1, 5, 9, 13].includes(i) },
+              { white: [3, 7, 11, 15].includes(i) },
+              { 'white-o': [2, 4, 6, 8, 10, 12, 14, 16].includes(i) },
+            ]"
+          ></div>
         </div>
         <div class="text-tip" v-if="showMessage && probabilityTotal != 1">
           注：当前奖池设置有误，抽奖不扣除金币，获奖结果不做记录。待管理员设置正确之后才能正常使用抽奖功能！
@@ -86,6 +97,8 @@ export default {
     let timeout = null;
     let stopWatch = null;
 
+    let dotAnimationTimer = null;
+
     // placeIndex => renderIndex
     const renderIndexArr = [0, 1, 2, 5, 8, 7, 6, 3, 4];
 
@@ -109,7 +122,7 @@ export default {
 
           stopAnimation(placeIndex, prize);
         })
-        .catch(err => {});
+        .catch((err) => {});
     };
 
     const stopAnimation = (placeIndex, prize) => {
@@ -128,14 +141,11 @@ export default {
                 }
 
                 // 发送 socket 消息
-                socket.emit(
-                  'MSG_LOTTERY',
-                  {
-                    create_time: new Date(),
-                    user_name: state.user.name,
-                    prize_name: prize.name,
-                  }
-                );
+                socket.emit('MSG_LOTTERY', {
+                  create_time: new Date(),
+                  user_name: state.user.name,
+                  prize_name: prize.name,
+                });
               }
               interval = null;
               // stop watch: index.value
@@ -173,12 +183,28 @@ export default {
             state.prizePoolData[renderIndexArr[item.place_index]] = item;
           });
         })
-        .catch(err => {});
+        .catch((err) => {});
     };
 
     onMounted(() => {
       getPrizePoolData();
 
+      // 装饰圆点动画
+      dotAnimationTimer = setInterval(() => {
+        [1, 5, 9, 13].forEach((item) => {
+          document.querySelector(`.dot-${item}`).classList.toggle('origin-o');
+        });
+
+        [3, 7, 11, 15].forEach((item) => {
+          document.querySelector(`.dot-${item}`).classList.toggle('white-o');
+        });
+
+        [2, 4, 6, 8, 10, 12, 14, 16].forEach((item) => {
+          document.querySelector(`.dot-${item}`).classList.toggle('white-o');
+        });
+      }, 1000);
+
+      // 方块跟随窗口大小按比例缩放
       const $el = document.querySelector('.prize-item');
       prizeItemHeight.value = Math.round($el.offsetWidth * 70) / 100;
 
@@ -198,7 +224,7 @@ export default {
       // 抽奖消息
       socket.on('MSG_LOTTERY', (res) => {
         // ElMessage.info(res);
-        const {user_name, prize_name} = res
+        const { user_name, prize_name } = res;
         state.bulletMessage = {
           type: 'MSG_LOTTERY',
           message: `恭喜「${user_name}」获得奖品：「${prize_name}」！`,
@@ -232,6 +258,8 @@ export default {
 
     onBeforeUnmount(() => {
       socket.disconnect();
+      clearInterval(dotAnimationTimer);
+      dotAnimationTimer = null;
     });
 
     return {
@@ -275,10 +303,11 @@ export default {
     box-sizing: border-box;
     text-align: center;
     background-color: #f2c889;
-    padding: 0.16rem;
+    padding: 0.2rem;
     border-radius: 0.04rem;
     box-shadow: 0 0 0.15rem #000;
     margin: 0 auto;
+    position: relative;
 
     .lottery-border {
       background-color: #df7823;
@@ -315,9 +344,102 @@ export default {
     .btn-lottery {
       cursor: pointer;
       background-color: #fdebd4;
+      box-shadow: 0 0 0.2rem #ff9500 inset;
 
       .text-lottery {
         font-size: 0.2rem;
+      }
+    }
+
+    .dot {
+      width: 0.1rem;
+      height: 0.1rem;
+      background-color: #fff;
+      border-radius: 50%;
+      position: absolute;
+
+      &.dot-1 {
+        top: 0.05rem;
+        left: 0.05rem;
+      }
+      &.dot-2 {
+        top: 0.05rem;
+        left: calc(25% - 0.05rem);
+      }
+      &.dot-3 {
+        top: 0.05rem;
+        left: calc(50% - 0.05rem);
+      }
+      &.dot-4 {
+        top: 0.05rem;
+        left: calc(75% - 0.05rem);
+      }
+      &.dot-5 {
+        top: 0.05rem;
+        right: 0.05rem;
+      }
+      &.dot-6 {
+        top: calc(25% - 0.05rem);
+        right: 0.05rem;
+      }
+      &.dot-7 {
+        top: calc(50% - 0.05rem);
+        right: 0.05rem;
+      }
+      &.dot-8 {
+        top: calc(75% - 0.05rem);
+        right: 0.05rem;
+      }
+      &.dot-9 {
+        right: 0.05rem;
+        bottom: 0.05rem;
+      }
+      &.dot-10 {
+        right: calc(25% - 0.05rem);
+        bottom: 0.05rem;
+      }
+      &.dot-11 {
+        right: calc(50% - 0.05rem);
+        bottom: 0.05rem;
+      }
+      &.dot-12 {
+        right: calc(75% - 0.05rem);
+        bottom: 0.05rem;
+      }
+      &.dot-13 {
+        left: 0.05rem;
+        bottom: 0.05rem;
+      }
+      &.dot-14 {
+        left: 0.05rem;
+        bottom: calc(25% - 0.05rem);
+      }
+      &.dot-15 {
+        left: 0.05rem;
+        bottom: calc(50% - 0.05rem);
+      }
+      &.dot-16 {
+        left: 0.05rem;
+        bottom: calc(75% - 0.05rem);
+      }
+
+      &.origin {
+        background-color: #df7823;
+      }
+      &.origin-o {
+        width: 0.08rem;
+        height: 0.08rem;
+        background-color: transparent;
+        border: 1px solid #df7823;
+      }
+      &.white {
+        background-color: #fff;
+      }
+      &.white-o {
+        width: 0.08rem;
+        height: 0.08rem;
+        background-color: transparent;
+        border: 1px solid #fff;
       }
     }
   }
