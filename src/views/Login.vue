@@ -2,18 +2,25 @@
   <div id="login">
     <div class="login-panel">
       <h1>登录</h1>
-      <el-form ref="loginForm" label-position="top" label-width="60px" :model="form" @keyup.enter="handleLogin">
-        <el-form-item label="">
+      <el-form
+        ref="loginForm"
+        label-position="top"
+        label-width="60px"
+        :model="form"
+        :rules="rules"
+        @keyup.enter="handleLogin"
+      >
+        <el-form-item label="" prop="name">
           <el-input v-model="form.name" placeholder="用户名"></el-input>
         </el-form-item>
 
-        <el-form-item label="">
+        <el-form-item label="" prop="password">
           <el-input v-model="form.password" type="password" placeholder="密码"></el-input>
         </el-form-item>
       </el-form>
 
       <div class="btn-box">
-        <el-button size="small" @click="handleLogin"> 登录 </el-button>
+        <el-button size="small" type="primary" @click="handleLogin"> 登录 </el-button>
         <el-button size="small" @click="toPage('/register')"> 注册 </el-button>
       </div>
 
@@ -25,7 +32,7 @@
 </template>
 
 <script>
-import { reactive, toRefs } from 'vue';
+import { reactive, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { login } from '@/apis/user';
@@ -35,9 +42,14 @@ export default {
     const router = useRouter();
 
     const state = reactive({
+      loginForm: null,
       form: {
         name: '',
         password: '',
+      },
+      rules: {
+        name: [{ required: true, message: '请填写用户名', trigger: 'blur' }],
+        password: [{ required: true, message: '请填写密码', trigger: 'blur' }],
       },
     });
 
@@ -46,22 +58,28 @@ export default {
     const toPage = (path) => router.push({ path });
 
     const handleLogin = () => {
-      login(state.form)
-        .then((res) => {
-          if (res.data.code === 200) {
-            if (res.data.data.length === 1) {
-              const user = res.data.data[0];
-              sessionStorage.setItem('user', JSON.stringify(user));
-              ElMessage.success('登录成功');
-              socket.emit('MSG_LOGIN', `用户「${user.name}」上线了！`);
+      state.loginForm.validate((valid) => {
+        if (valid) {
+          login(state.form)
+            .then((res) => {
+              if (res.data.code === 200) {
+                if (res.data.data.length === 1) {
+                  const user = res.data.data[0];
+                  sessionStorage.setItem('user', JSON.stringify(user));
+                  ElMessage.success('登录成功');
+                  socket.emit('MSG_LOGIN', `用户「${user.name}」上线了！`);
 
-              router.push({ path: '/lottery' });
-            } else {
-              ElMessage.error('用户名或密码错误！');
-            }
-          }
-        })
-        .catch(() => {});
+                  router.push({ path: '/lottery' });
+                } else {
+                  ElMessage.error('用户名或密码错误！');
+                }
+              } else if (res.data.errorCode === '500_01') {
+                ElMessage.warning('请输入用户名和密码！');
+              }
+            })
+            .catch(() => {});
+        }
+      });
     };
 
     return {

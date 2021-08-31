@@ -2,18 +2,26 @@
   <div id="register">
     <div class="register-panel">
       <h1>注册</h1>
-      <el-form ref="registerForm" label-position="top" label-width="60px" :model="form">
-        <el-form-item label="">
+      <el-form
+        ref="registerForm"
+        label-position="top"
+        label-width="60px"
+        :model="form"
+        :rules="rules"
+      >
+        <el-form-item label="" prop="name">
           <el-input v-model="form.name" placeholder="用户名"></el-input>
         </el-form-item>
 
-        <el-form-item label="">
+        <el-form-item label="" prop="password">
           <el-input v-model="form.password" type="password" placeholder="密码"></el-input>
         </el-form-item>
       </el-form>
 
       <div class="btn-box">
-        <el-button class="register-btn" size="small" @click="handleRegister"> 注册 </el-button>
+        <el-button class="register-btn" size="small" type="primary" @click="handleRegister">
+          注册
+        </el-button>
         <div class="m-t-8">
           已有账号，去 <el-button type="text" @click="toPage('/login')">登录</el-button>
         </div>
@@ -36,27 +44,36 @@ export default {
     const router = useRouter();
 
     const state = reactive({
+      registerForm: null,
       form: {},
+      rules: {
+        name: [{ required: true, message: '请填写用户名', trigger: 'blur' }],
+        password: [{ required: true, message: '请填写密码', trigger: 'blur' }],
+      },
     });
 
     const toPage = (path) => router.push({ path });
 
     const handleRegister = () => {
-      register({
-        ...state.form,
-        ...{ create_time: moment(new Date()).format('YYYY-MM-DD HH:mm:ss') },
-      })
-        .then((res) => {
-          if (res.data.errorCode === '500_01') {
-            ElMessage.warning('请输入用户名和密码！');
-          } else if (res.data.errorCode === '500_02') {
-            ElMessage.warning('账户信息已存在！');
-          } else {
-            ElMessage.success('注册成功，请登录！');
-            router.push('/login');
-          }
-        })
-        .catch();
+      state.registerForm.validate((valid) => {
+        if (valid) {
+          register({
+            ...state.form,
+            ...{ create_time: moment(new Date()).format('YYYY-MM-DD HH:mm:ss') },
+          })
+            .then((res) => {
+              if (res.data.errorCode === '500_01') {
+                ElMessage.warning('请输入用户名和密码！');
+              } else if (res.data.errorCode === '500_02') {
+                ElMessage.warning('账户信息已存在！');
+              } else {
+                ElMessage.success('注册成功，请登录！');
+                router.push('/login');
+              }
+            })
+            .catch();
+        }
+      });
     };
 
     return {
