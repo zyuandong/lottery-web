@@ -2,12 +2,7 @@
   <div id="register">
     <div class="register-panel">
       <h1>注册</h1>
-      <el-form
-        ref="registerForm"
-        label-position="top"
-        label-width="60px"
-        :model="form"
-      >
+      <el-form ref="registerForm" label-position="top" label-width="60px" :model="form">
         <el-form-item label="">
           <el-input v-model="form.name" placeholder="用户名"></el-input>
         </el-form-item>
@@ -18,9 +13,7 @@
       </el-form>
 
       <div class="btn-box">
-        <el-button class="register-btn" size="small" @click="handleRegister">
-          注册
-        </el-button>
+        <el-button class="register-btn" size="small" @click="handleRegister"> 注册 </el-button>
         <div class="m-t-8">
           已有账号，去 <el-button type="text" @click="toPage('/login')">登录</el-button>
         </div>
@@ -36,6 +29,7 @@ import { reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import { register } from '@/apis/user';
 import { ElMessage } from 'element-plus';
+import moment from 'moment';
 
 export default {
   setup() {
@@ -48,7 +42,10 @@ export default {
     const toPage = (path) => router.push({ path });
 
     const handleRegister = () => {
-      register(state.form)
+      register({
+        ...state.form,
+        ...{ create_time: moment(new Date()).format('YYYY-MM-DD HH:mm:ss') },
+      })
         .then((res) => {
           if (res.data.errorCode === '500_01') {
             ElMessage.warning('请输入用户名和密码！');
@@ -74,7 +71,7 @@ export default {
 <style lang="scss">
 #register {
   height: 100vh;
-  background-color: #3C6AF2;
+  background-color: #3c6af2;
   overflow: hidden;
 
   h1 {
@@ -84,7 +81,7 @@ export default {
   .register-panel {
     width: 3rem;
     height: 4rem;
-    background-color: #DEE4FD;
+    background-color: #dee4fd;
     padding: 0.2rem;
     // border: 1px solid #000;
     border-radius: 0.04rem;
