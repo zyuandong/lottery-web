@@ -109,7 +109,7 @@ export default {
 
           stopAnimation(placeIndex, prize);
         })
-        .catch();
+        .catch(err => {});
     };
 
     const stopAnimation = (placeIndex, prize) => {
@@ -173,7 +173,7 @@ export default {
             state.prizePoolData[renderIndexArr[item.place_index]] = item;
           });
         })
-        .catch();
+        .catch(err => {});
     };
 
     onMounted(() => {
