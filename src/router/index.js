@@ -36,7 +36,7 @@ export const asyncRoutes = {
     name: 'admin',
     path: '/admin',
     component: () => import('@/layout/Index.vue'),
-    redirect: '/admin/users',
+    redirect: '/admin/prizes/setting',
     children: [
       {
         path: 'users',

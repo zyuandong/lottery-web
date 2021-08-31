@@ -13,7 +13,7 @@
     >
       <el-submenu index="submenu">
         <template #title>{{ user.name }}</template>
-        <el-menu-item index="/admin/prizes/list" v-if="user.is_admin">系统管理</el-menu-item>
+        <el-menu-item index="/admin" v-if="user.is_admin">系统管理</el-menu-item>
         <el-menu-item index="/lottery" v-if="user.is_admin">去抽奖</el-menu-item>
         <el-menu-item index="/login" @click="handleSignOut">退出</el-menu-item>
       </el-submenu>
@@ -34,7 +34,7 @@ export default {
     const router = useRouter();
     let defaultActive = '/lottery';
     if (router.currentRoute.value.fullPath.includes('admin')) {
-      defaultActive = '/admin/users';
+      defaultActive = '/admin';
     }
 
     const toPage = (index, indexPath) => {
