@@ -16,7 +16,9 @@ const getUserData = () => {
 
   if (!user.oid) {
     sessionStorage.removeItem('user');
-    router.push('/login');
+    // debugger
+    // 不需要此处跳转，通过路由守卫去跳转
+    // router.push('/login');
   } else {
     getUser({ oid: user.oid })
       .then((res) => {
