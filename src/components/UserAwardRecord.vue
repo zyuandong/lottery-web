@@ -8,6 +8,7 @@
         <div class="create-time">{{ moment(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}</div>
         <div class="prize">{{ item.prize_name }}</div>
       </div>
+      <div v-if="!data.length">暂无数据</div>
     </div>
   </el-card>
 </template>
@@ -49,6 +50,11 @@ export default {
 #user-award-record {
   max-height: calc(100vh - 1.1rem);
   overflow: auto;
+  text-align: center;
+
+  .award-record-body {
+    text-align: left;
+  }
 
   .item {
     font-size: 0.12rem;
