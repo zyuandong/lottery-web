@@ -21,7 +21,6 @@ export const getLatestAwardRecord = (params) => {
 export const getUserAwardRecord = (params) => {
   return request({
     url: `${context}/users/${params.oid}`,
-    method: 'get',
-    params
+    method: 'get'
   })
 }

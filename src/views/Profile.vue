@@ -18,7 +18,7 @@
 
 <script>
 import UserAwardRecord from '@/components/UserAwardRecord.vue';
-import { reactive, toRefs } from '@vue/reactivity';
+import { reactive, toRefs } from 'vue';
 
 export default {
   components: {
@@ -38,8 +38,9 @@ export default {
 
 <style lang="scss">
 #profile {
+  min-width: 2.8rem;
   .profile-panel {
-    height: calc(100vh - 1rem);
+    height: calc(100vh - 1.1rem);
 
     .el-avatar {
       width: 2rem;
