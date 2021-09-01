@@ -23,14 +23,20 @@
 </template>
 
 <script>
-import { reactive, toRefs } from 'vue';
+import { compile, computed, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 
 export default {
   setup() {
+    const store = useStore();
+
     const state = reactive({
-      user: JSON.parse(sessionStorage.getItem('user')),
+      // user: JSON.parse(sessionStorage.getItem('user')),
+      // user: computed(() => store.state.user)
     });
+
+    const user = computed(() => store.state.user);
 
     const router = useRouter();
     let defaultActive = router.currentRoute.value.fullPath;
@@ -44,13 +50,14 @@ export default {
     };
 
     const handleSignOut = () => {
-      sessionStorage.clear('user');
+      sessionStorage.clear();
       toPage('/login');
     };
 
     return {
       ...toRefs(state),
       toPage,
+      user,
       defaultActive,
       handleSignOut,
     };

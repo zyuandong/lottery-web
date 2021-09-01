@@ -73,6 +73,7 @@ import { getPrizePool } from '@/apis/prize';
 import { ElLoading, ElMessage } from 'element-plus';
 import AwardRecord from '@/components/AwardRecord.vue';
 import Barrage from '@/components/Barrage.vue';
+import { useStore } from 'vuex';
 
 export default {
   components: {
@@ -80,6 +81,8 @@ export default {
     Barrage,
   },
   setup() {
+    const store = useStore();
+
     const state = reactive({
       user: JSON.parse(sessionStorage.getItem('user')),
       prizePoolData: new Array(9).fill(0),

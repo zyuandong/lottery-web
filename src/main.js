@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import router, { asyncRoutes } from '@/router';
+import store from './store';
 import ElementPlus from 'element-plus';
 
 import 'element-plus/packages/theme-chalk/src/index.scss';
@@ -17,6 +18,7 @@ if (user && user.is_admin) {
 const app = createApp(App);
 
 app.use(router);
+app.use(store);
 app.use(ElementPlus);
 
 app.mount('#app');

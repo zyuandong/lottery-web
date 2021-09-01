@@ -35,16 +35,19 @@
 </template>
 
 <script>
-import { reactive, ref, toRefs } from 'vue';
+import { computed, reactive, ref, toRefs } from 'vue';
 import UserAwardRecord from '@/components/UserAwardRecord.vue';
 import { uploadAvatar } from '@/apis/user';
 import { ElMessage } from 'element-plus';
+import { useStore } from 'vuex';
 
 export default {
   components: {
     UserAwardRecord,
   },
   setup() {
+    const store = useStore();
+
     const state = reactive({
       user: JSON.parse(sessionStorage.getItem('user')),
       showNewAvatar: false,
@@ -52,6 +55,8 @@ export default {
 
     let newAvatar = ref('');
     let formData = new FormData();
+
+    // const user = computed(() => store.state.user);
 
     const handleChange = (file) => {
       formData.append('file', file.raw);
@@ -72,7 +77,9 @@ export default {
           if (res.data.code === 200) {
             state.showNewAvatar = false;
             state.user.avatar = res.data.data;
-            sessionStorage.setItem('user', JSON.stringify(state.user));
+            // console.log('===user', user);
+            // sessionStorage.setItem('user', JSON.stringify(state.user));
+            store.dispatch('updateUser', state.user);
             ElMessage.success('更新头像成功！');
           }
         })
