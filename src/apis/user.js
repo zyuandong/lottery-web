@@ -40,3 +40,12 @@ export const lottery = (data) => {
     data,
   });
 };
+
+export const uploadAvatar = (data) => {
+  const oid = data.get('oid')
+  return request({
+    url: `${context}/${oid}/avatar/upload`,
+    method: 'post',
+    data
+  })
+}
