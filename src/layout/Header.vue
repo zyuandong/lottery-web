@@ -1,8 +1,5 @@
 <template>
   <div id="app-header" class="flex-box justify-content-flex-end">
-    <!-- <h1 class="title">header</h1>
-    <router-link to="/admin/user">Admin</router-link>
-    <router-link to="/lottery">lottery</router-link> -->
     <el-menu
       mode="horizontal"
       background-color="#000"
@@ -13,8 +10,8 @@
     >
       <el-submenu index="submenu">
         <template #title>{{ user.name }}</template>
+        <el-menu-item index="/lottery">去抽奖</el-menu-item>
         <el-menu-item index="/admin" v-if="user.is_admin">系统管理</el-menu-item>
-        <el-menu-item index="/lottery" v-if="user.is_admin">去抽奖</el-menu-item>
         <el-menu-item index="/login" @click="handleSignOut">退出</el-menu-item>
       </el-submenu>
     </el-menu>
@@ -32,7 +29,7 @@ export default {
     });
 
     const router = useRouter();
-    let defaultActive = '/lottery';
+    let defaultActive = router.currentRoute.value.fullPath;
     if (router.currentRoute.value.fullPath.includes('admin')) {
       defaultActive = '/admin';
     }

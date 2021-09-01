@@ -277,6 +277,7 @@ export default {
 #lottery {
   margin: -0.2rem;
   padding: 0.2rem;
+  background-color: #3B6AF1;
 
   .message-box {
     width: 50%;

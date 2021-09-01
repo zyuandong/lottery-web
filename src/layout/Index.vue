@@ -7,7 +7,7 @@
       <el-aside width="200px" v-if="isAdminPage">
         <Aside />
       </el-aside>
-      <el-main :class="{'lottery-page': !isAdminPage}">
+      <el-main>
         <router-view />
       </el-main>
     </el-container>
