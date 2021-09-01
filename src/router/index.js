@@ -12,6 +12,10 @@ const constantRoutes = [
         component: () => import('@/views/Lottery.vue'),
       },
       {
+        path: '/profile',
+        component: () => import('@/views/Profile.vue'),
+      },
+      {
         path: '404',
         component: () => import('@/views/404.vue'),
       },

@@ -9,8 +9,12 @@
       @select="toPage"
     >
       <el-submenu index="submenu">
-        <template #title>{{ user.name }}</template>
+        <template #title>
+          <el-avatar size="small" :src="`lottery_service_api/${user.avatar}`"></el-avatar>
+          {{ user.name }}
+        </template>
         <el-menu-item index="/lottery">去抽奖</el-menu-item>
+        <el-menu-item index="/profile">个人资料</el-menu-item>
         <el-menu-item index="/admin" v-if="user.is_admin">系统管理</el-menu-item>
         <el-menu-item index="/login" @click="handleSignOut">退出</el-menu-item>
       </el-submenu>
@@ -40,15 +44,15 @@ export default {
     };
 
     const handleSignOut = () => {
-      sessionStorage.clear('user')
-      toPage('/login')
-    }
+      sessionStorage.clear('user');
+      toPage('/login');
+    };
 
     return {
       ...toRefs(state),
       toPage,
       defaultActive,
-      handleSignOut
+      handleSignOut,
     };
   },
 };
