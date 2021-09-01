@@ -67,7 +67,7 @@ export default {
                   const user = res.data.data[0];
                   sessionStorage.setItem('user', JSON.stringify(user));
                   ElMessage.success('登录成功');
-                  socket.emit('MSG_LOGIN', `用户「${user.name}」上线了！`);
+                  socket.emit('MSG_LOGIN', user)
 
                   router.push({ path: '/lottery' });
                 } else {

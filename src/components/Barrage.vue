@@ -21,13 +21,37 @@ export default {
     watch(
       () => props.message,
       (val) => {
+        // 创建弹幕并生成随机高度
         const R = Math.floor(Math.random() * 170);
         const $el = document.createElement('span');
-        $el.innerText = val.message;
         $el.setAttribute('style', `top: ${R}px`);
-        val.type === 'MSG_LOGIN'
-          ? $el.classList.add('barrage-item', 'login')
-          : $el.classList.add('barrage-item', 'lottery');
+
+        // 用户头像
+        const { avatar } = val.data;
+        const $avatar = document.createElement('img');
+        $avatar.classList.add('avatar');
+        $avatar.src = `/lottery_service_api/${avatar}`;
+
+        // 文字内容
+        const $text = document.createElement('span');
+
+        if (val.type === 'MSG_LOGIN') {
+          const { name } = val.data;
+
+          $el.classList.add('barrage-item', 'login');
+          $el.append($avatar);
+
+          $text.innerText = `「${name}」上线了！`;
+          $el.append($text);
+        } else {
+          const { user_name, prize_name } = val.data;
+
+          $el.classList.add('barrage-item', 'lottery');
+          $el.append($avatar);
+
+          $text.innerText = `恭喜「${user_name}」获得奖品：「${prize_name}」！`;
+          $el.append($text);
+        }
         $barrage.append($el);
       }
     );
@@ -45,10 +69,11 @@ export default {
   right: -50vw;
 
   .barrage-item {
+    display: flex;
+    align-items: center;
     color: rgba(255, 255, 255, 0.7);
-    display: inline-block;
-    padding: 0.04rem 0.08rem;
     background-color: rgba(0, 0, 0, 0.3);
+    padding: 0.04rem;
     border-radius: 0.5rem;
     position: absolute;
     z-index: 1;
@@ -58,6 +83,13 @@ export default {
 
     &.lottery {
       background-color: rgba(223, 120, 35, 0.7);
+    }
+
+    .avatar {
+      width: 0.28rem;
+      height: 0.28rem;
+      border-radius: 50%;
+      margin-right: 0.08rem;
     }
   }
 }

@@ -144,6 +144,7 @@ export default {
                 socket.emit('MSG_LOTTERY', {
                   create_time: new Date(),
                   user_name: state.user.name,
+                  avatar: state.user.avatar,
                   prize_name: prize.name,
                 });
               }
@@ -217,17 +218,16 @@ export default {
         // ElMessage.info(res);
         state.bulletMessage = {
           type: 'MSG_LOGIN',
-          message: res,
+          data: res,
         };
       });
 
       // 抽奖消息
       socket.on('MSG_LOTTERY', (res) => {
         // ElMessage.info(res);
-        const { user_name, prize_name } = res;
         state.bulletMessage = {
           type: 'MSG_LOTTERY',
-          message: `恭喜「${user_name}」获得奖品：「${prize_name}」！`,
+          data: res
         };
 
         // 动态更新获奖记录面板
