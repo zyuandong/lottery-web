@@ -14,20 +14,24 @@
 </template>
 
 <script>
-import { onMounted, reactive, toRefs } from 'vue';
+import { computed, onMounted, reactive, toRefs } from 'vue';
 import { getUserAwardRecord } from '@/apis/awardRecord';
 import moment from 'moment';
+import { useStore } from 'vuex';
 
 export default {
   setup() {
+    const store = useStore();
+
     const state = reactive({
       data: [],
+      user: computed(() => store.state.user),
     });
 
-    const user = JSON.parse(sessionStorage.getItem('user'));
+    // const user = JSON.parse(sessionStorage.getItem('user'));
 
     const getUserAwardRecordData = () => {
-      getUserAwardRecord({ oid: user.oid }).then((res) => {
+      getUserAwardRecord({ oid: state.user.oid }).then((res) => {
         if (res.data.code === 200) {
           state.data = res.data.data;
         }

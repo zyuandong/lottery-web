@@ -36,10 +36,12 @@ import { reactive, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { login } from '@/apis/user';
+import { useStore } from 'vuex';
 
 export default {
   setup() {
     const router = useRouter();
+    const store = useStore();
 
     const state = reactive({
       loginForm: null,
@@ -65,7 +67,8 @@ export default {
               if (res.data.code === 200) {
                 if (res.data.data.length === 1) {
                   const user = res.data.data[0];
-                  sessionStorage.setItem('user', JSON.stringify(user));
+                  // sessionStorage.setItem('user', JSON.stringify(user));
+                  store.dispatch('updateUser', user)
                   ElMessage.success('登录成功');
                   socket.emit('MSG_LOGIN', user)
 

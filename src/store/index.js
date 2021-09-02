@@ -10,7 +10,7 @@ const store = createStore({
   },
   mutations: {
     UPDATE_USER(state, user) {
-      console.log('====update user',user);
+      // console.log('====update user',user);
       state.user = user;
       sessionStorage.setItem('user', JSON.stringify(user));
     },

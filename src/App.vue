@@ -15,20 +15,17 @@ const getUserData = () => {
   const user = sessionStorage.getItem('user') ? JSON.parse(sessionStorage.getItem('user')) : {};
 
   if (!user.oid) {
-    console.log('==0==', user);
     // sessionStorage.removeItem('user');
     sessionStorage.clear();
     // debugger
     // 不需要此处跳转，通过路由守卫去跳转
     // router.push('/login');
   } else {
-    console.log('==1==', user);
     getUser({ oid: user.oid })
       .then((res) => {
         if (res.data.code === 200) {
-          console.log('==2==', user);          
-          sessionStorage.setItem('user', JSON.stringify(res.data.data));
-          // store.dispatch('updateUser', res.data.data);
+          // sessionStorage.setItem('user', JSON.stringify(res.data.data));
+          store.dispatch('updateUser', res.data.data);
         }
       })
       .catch();

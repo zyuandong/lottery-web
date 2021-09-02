@@ -84,7 +84,8 @@ export default {
     const store = useStore();
 
     const state = reactive({
-      user: JSON.parse(sessionStorage.getItem('user')),
+      // user: JSON.parse(sessionStorage.getItem('user')),
+      user: computed(() => store.state.user),
       prizePoolData: new Array(9).fill(0),
       showMessage: false,
       bulletMessage: null,
