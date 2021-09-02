@@ -12,15 +12,17 @@ const router = useRouter();
 const store = useStore();
 
 const getUserData = () => {
-  const user = sessionStorage.getItem('user') ? JSON.parse(sessionStorage.getItem('user')) : {};
+  // const user = sessionStorage.getItem('user') ? JSON.parse(sessionStorage.getItem('user')) : {};
+  const user = store.state.user;
 
-  if (!user.oid) {
+  if (!user) {
     // sessionStorage.removeItem('user');
     sessionStorage.clear();
     // debugger
     // 不需要此处跳转，通过路由守卫去跳转
     // router.push('/login');
   } else {
+    // debugger
     getUser({ oid: user.oid })
       .then((res) => {
         if (res.data.code === 200) {
