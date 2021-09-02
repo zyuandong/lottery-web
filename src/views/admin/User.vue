@@ -14,6 +14,11 @@
           <el-tag size="small" v-else type="info">否</el-tag>
         </template>
       </el-table-column>
+      <el-table-column prop="create_time" label="注册时间">
+        <template #default="scope">
+          {{ moment(scope.row.create_time).format('YYYY-MM-DD HH:mm:ss') }}
+        </template>
+      </el-table-column>
     </el-table>
 
     <Pagination
@@ -28,6 +33,7 @@
 import { onMounted, reactive, toRefs } from 'vue';
 import { getUsers } from '@/apis/user';
 import Pagination from '@/components/Pagination.vue';
+import moment from 'moment';
 
 export default {
   components: {
@@ -68,6 +74,7 @@ export default {
 
     return {
       ...toRefs(state),
+      moment,
       handleCurrentChange,
     };
   },
