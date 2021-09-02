@@ -21,15 +21,15 @@
       <el-table-column prop="probability" label="概率"></el-table-column>
       <el-table-column label="类型">
         <template #default="scope">
-          <el-tag v-if="scope.row.type === 0" type="info">文字</el-tag>
-          <el-tag v-else-if="scope.row.type === 1" type="warning">金币</el-tag>
-          <el-tag v-else>实物</el-tag>
+          <el-tag size="small" v-if="scope.row.type === 0" type="info">文字</el-tag>
+          <el-tag size="small" v-else-if="scope.row.type === 1" type="warning">金币</el-tag>
+          <el-tag size="small" v-else>实物</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="is_active" label="状态">
         <template #default="scope">
-          <el-tag v-if="scope.row.is_active">激活</el-tag>
-          <el-tag v-else type="info">未激活</el-tag>
+          <el-tag size="small" v-if="scope.row.is_active">激活</el-tag>
+          <el-tag size="small" v-else type="info">未激活</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作">

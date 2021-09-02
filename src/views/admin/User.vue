@@ -1,12 +1,17 @@
 <template>
   <div id="user">
     <el-table :data="tableData">
-      <el-table-column prop="name" label="名称"></el-table-column>
+      <el-table-column label="用户" width="60">
+        <template #default="scope">
+          <el-avatar :src="`/lottery_service_api/${scope.row.avatar}`"></el-avatar>
+        </template>
+      </el-table-column>
+      <el-table-column prop="name"></el-table-column>
       <el-table-column prop="gold_coin_num" label="金币数量"></el-table-column>
       <el-table-column prop="is_admin" label="是否为管理员">
         <template #default="scope">
-          <el-tag v-if="scope.row.is_admin">是</el-tag>
-          <el-tag v-else type="info">否</el-tag>
+          <el-tag size="small" v-if="scope.row.is_admin">是</el-tag>
+          <el-tag size="small" v-else type="info">否</el-tag>
         </template>
       </el-table-column>
     </el-table>
