@@ -8,6 +8,7 @@
      推荐版本至少为 v12。建议使用 NVM 安装、管理 Node.js 版本
 
    - Vite
+     `npm i -g vite@latest`
 
 2. 安装项目依赖
 
@@ -24,32 +25,21 @@
 
 3. 启动项目
 
+   `npm run dev`
+
 ## 2. 部署上线
+
+推荐使用 Docker 镜像的方式部署。
 
 Dockerfile:
 
 ```docker
 FROM nginx
-COPY dist/ /usr/share/nginx/html/
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY /root/lottery-web/dist/ /usr/share/nginx/html/
+COPY /root/lottery-web/nginx/default.conf /etc/nginx/conf.d/default.conf
 ```
 
-生成镜像：
-
-`docker build -t lottery-web .`
-
-创建并运行容器：
-
-```sh
-docker run -d \
---name lottery-web:v1 \
--p 3001:80 \
--v /root/lottery-web/nginx:/etc/nginx/conf.d \
--v /root/lottery-web/dist:/usr/share/nginx/html \
-lottery-web
-```
-
-Nginx default.conf:
+Nginx default.conf 内容如下: 
 
 ```nginx
 server {
@@ -95,3 +85,24 @@ server {
   }
 }
 ```
+
+proxy_pass 为对应后端服务地址
+
+生成镜像：
+
+`docker build -t lottery-web .`
+
+创建并运行容器：
+
+```sh
+docker run -d \
+--name lottery-web:v1 \
+-p 3001:80 \
+-v /root/lottery-web/nginx:/etc/nginx/conf.d \
+-v /root/lottery-web/dist:/usr/share/nginx/html \
+lottery-web
+```
+
+使用命令 `docker ps` 查看正在运行中的容器：
+
+输出的列表中出现 lottery-web:v1，即代表服务部署成功，端口为 3001

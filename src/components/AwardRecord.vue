@@ -1,7 +1,7 @@
 <template>
   <div id="award-record">
     <div>
-      <h1 class="title">24 小时内获奖记录</h1>
+      <h1 class="title">24 小时内中奖记录</h1>
       <div class="award-record-item m-b-16" v-for="(item, index) in tableData" :key="index">
         <div class="create-time">
           {{ moment(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}：
