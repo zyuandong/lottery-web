@@ -151,6 +151,8 @@ export default {
                   avatar: state.user.avatar,
                   prize_name: prize.name,
                 });
+              } else {
+                ElMessage.info(`很遗憾，未中奖！`);
               }
               interval = null;
               // stop watch: index.value
@@ -158,7 +160,20 @@ export default {
             }
           }
         );
-      }, 1000);
+      }, 5000);
+    };
+
+    const startAnimation = (step) => {
+      clearInterval(interval);
+      interval = setInterval(() => {
+        document.querySelector(`.item-${index.value}`).classList.remove('is-active');
+
+        document
+          .querySelector(`.item-${index.value === 7 ? 0 : index.value + 1}`)
+          .classList.add('is-active');
+
+        index.value = index.value === 7 ? 0 : index.value + 1;
+      }, step);
     };
 
     const handleLottery = () => {
@@ -168,15 +183,29 @@ export default {
       if (!interval) {
         sendRequest();
         if (probabilityTotal.value === 1 && !state.user.is_admin) state.user.gold_coin_num -= 100;
-        interval = setInterval(() => {
-          document.querySelector(`.item-${index.value}`).classList.remove('is-active');
+        let step = 250
+        let startTime = Date.now();
+        startAnimation(200);
+        let timer = setInterval(() => {
+          startAnimation(step)
+          if (Date.now () - startTime < 2500) {
+            step = step === 50 ? step : step -= 50
+          } else if (Date.now() - startTime > 4000) {
+            step = step === 250 ? step : step += 50
+          }
+        }, 500)
 
-          document
-            .querySelector(`.item-${index.value === 7 ? 0 : index.value + 1}`)
-            .classList.add('is-active');
+        setTimeout(() => clearInterval(timer), 5000)
 
-          index.value = index.value === 7 ? 0 : index.value + 1;
-        }, 100);
+        // interval = setInterval(() => {
+        //   document.querySelector(`.item-${index.value}`).classList.remove('is-active');
+
+        //   document
+        //     .querySelector(`.item-${index.value === 7 ? 0 : index.value + 1}`)
+        //     .classList.add('is-active');
+
+        //   index.value = index.value === 7 ? 0 : index.value + 1;
+        // }, 100);
       }
     };
 
@@ -231,7 +260,7 @@ export default {
         // ElMessage.info(res);
         state.bulletMessage = {
           type: 'MSG_LOTTERY',
-          data: res
+          data: res,
         };
 
         // 动态更新获奖记录面板
@@ -281,7 +310,7 @@ export default {
 #lottery {
   margin: -0.2rem;
   padding: 0.2rem;
-  background-color: #3B6AF1;
+  background-color: #3b6af1;
 
   .message-box {
     width: 50%;
