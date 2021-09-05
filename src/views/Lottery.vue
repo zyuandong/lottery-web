@@ -63,6 +63,18 @@
         <AwardRecord :message="latestAwardRecord" />
       </el-col>
     </el-row>
+
+    <el-dialog v-model="dialogLottery" width="300px">
+      <template #title>
+        中奖信息
+      </template>
+      <div class="dialog-body">
+        <img v-if="prize.type === 1" src="@/assets/svg/gold_coin.svg" alt="">
+        <img v-else :src="`/lottery_service_api/${prize.pic}`" alt="">
+        <div class="m-b-16">🎉 恭喜你获得奖品：「{{ prize.name }}」</div>
+        <el-button size="small" type="primary" @click="dialogLottery = false">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -90,6 +102,8 @@ export default {
       showMessage: false,
       bulletMessage: null,
       latestAwardRecord: null,
+      dialogLottery: false,
+      prize: null
     });
 
     // index: 抽奖动效所需 index
@@ -123,6 +137,7 @@ export default {
       lottery({ ...state.user })
         .then((res) => {
           const { placeIndex, prize } = res.data.data;
+          state.prize = prize;
 
           stopAnimation(placeIndex, prize);
         })
@@ -139,7 +154,8 @@ export default {
             if (val === placeIndex) {
               clearInterval(interval);
               if (prize && prize.type) {
-                ElMessage.success(`恭喜你获得奖品：「${prize.name}」！`);
+                // ElMessage.success(`恭喜你获得奖品：「${prize.name}」！`);
+                state.dialogLottery = true;
                 if (prize.type === 1 && !state.user.is_admin) {
                   state.user.gold_coin_num += prize.number;
                 }
@@ -489,6 +505,15 @@ export default {
     top: 0.6rem;
     left: 0;
     right: 0;
+  }
+
+  .dialog-body {
+    text-align: center;
+
+    img {
+      max-width: 50%;
+      max-height: 50%;
+    }
   }
 }
 </style>
