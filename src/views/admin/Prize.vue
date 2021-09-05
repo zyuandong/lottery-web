@@ -50,7 +50,7 @@
 
     <el-dialog
       v-model="dialogForm"
-      title="新增奖品"
+      :title="formData.oid ? '编辑奖品' : '新增奖品'"
       width="500px"
       v-if="dialogForm"
       :close-on-click-modal="false"
@@ -115,6 +115,7 @@ export default {
     };
 
     const handleAdd = () => {
+      state.formData = {};
       state.dialogForm = true;
     };
 

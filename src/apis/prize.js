@@ -34,6 +34,14 @@ export const setPrizePool = (data) => {
   })
 }
 
+export const updatePrize = (data) => {
+  return request({
+    url: `${context}/${data.oid}`,
+    method: 'put',
+    data
+  })
+}
+
 export const deletePrize = (data) => {
   return request({
     url: `${context}/${data.oid}`,

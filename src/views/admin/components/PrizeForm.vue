@@ -25,7 +25,7 @@
           :on-success="handleSuccess"
           :on-change="handleChange"
         >
-          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+          <img v-if="form.pic" :src="`/lottery_service_api/${form.pic}`" class="avatar" />
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </el-form-item>
@@ -33,9 +33,7 @@
 
     <div class="btn-box">
       <el-button size="small" @click="handleCancel">取消</el-button>
-      <el-button size="small" type="primary" @click="handleSubmit">
-        确定
-      </el-button>
+      <el-button size="small" type="primary" @click="handleSubmit"> 确定 </el-button>
     </div>
 
     <!-- <pre>{{ form }}</pre> -->
@@ -44,20 +42,24 @@
 
 <script>
 import { reactive, ref, toRefs } from 'vue';
-import { addPrize } from '@/apis/prize';
 import { ElMessage } from 'element-plus';
+import { addPrize, updatePrize } from '@/apis/prize';
 
 export default {
+  props: {
+    data: Object,
+  },
   setup(props, { emit }) {
+    const { oid, name, type, number, pic } = props.data;
     const state = reactive({
       form: {
-        type: 0,
-        number: 1,
+        name: name || '',
+        type: type || 0,
+        number: number || 1,
+        pic: pic || '',
         place_index: -1,
       },
     });
-
-    const imageUrl = ref('');
 
     const handleChange = (file) => {
       // console.log(file);
@@ -84,23 +86,35 @@ export default {
 
     const handleSuccess = (res, file) => {
       if (res.code === 200) {
-        imageUrl.value = URL.createObjectURL(file.raw);
+        // imageUrl.value = URL.createObjectURL(file.raw);
         state.form.pic = res.data;
       }
     };
 
     const handleSubmit = () => {
-      addPrize(state.form)
-        .then((res) => {
-          if (res.data.code === 200) {
-            ElMessage.success('新增奖品成功！');
-            handleCancel();
-            emit('reset');
-          } else if (res.data.errorCode === '500_01') {
-            ElMessage.error('奖品已存在！');
-          }
-        })
-        .catch();
+      if (props.data.oid) {
+        updatePrize({ oid, ...state.form })
+          .then((res) => {
+            if (res.data.code === 200) {
+              ElMessage.success('编辑奖品成功！');
+              handleCancel();
+              emit('reset');
+            }
+          })
+          .catch();
+      } else {
+        addPrize(state.form)
+          .then((res) => {
+            if (res.data.code === 200) {
+              ElMessage.success('新增奖品成功！');
+              handleCancel();
+              emit('reset');
+            } else if (res.data.errorCode === '500_01') {
+              ElMessage.error('奖品已存在！');
+            }
+          })
+          .catch();
+      }
     };
 
     const handleCancel = () => {
@@ -109,7 +123,6 @@ export default {
 
     return {
       ...toRefs(state),
-      imageUrl,
       handleSubmit,
       handleCancel,
       handleChange,

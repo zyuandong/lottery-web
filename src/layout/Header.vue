@@ -10,7 +10,7 @@
     >
       <el-submenu index="submenu">
         <template #title>
-          <el-avatar size="small" :src="`lottery_service_api/${user.avatar}`"></el-avatar>
+          <el-avatar size="small" :src="`/lottery_service_api/${user.avatar}`"></el-avatar>
           {{ user.name }}
         </template>
         <el-menu-item index="/lottery">去抽奖</el-menu-item>
