@@ -33,3 +33,10 @@ export const setPrizePool = (data) => {
     data
   })
 }
+
+export const deletePrize = (data) => {
+  return request({
+    url: `${context}/${data.oid}`,
+    method: 'delete'
+  })
+}

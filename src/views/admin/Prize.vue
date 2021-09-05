@@ -35,6 +35,9 @@
       <el-table-column label="操作">
         <template #default="scope">
           <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button type="text" class="text-error" @click="handleDelete(scope.row)">
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -52,16 +55,22 @@
       v-if="dialogForm"
       :close-on-click-modal="false"
     >
-      <PrizeForm @close="dialogForm = false" @reset="handleReset" />
+      <PrizeForm
+        v-if="dialogForm"
+        :data="formData"
+        @close="dialogForm = false"
+        @reset="handleReset"
+      />
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { onMounted, reactive, toRefs } from 'vue';
-import { getPrizes } from '@/apis/prize';
 import Pagination from '@/components/Pagination.vue';
 import PrizeForm from './components/PrizeForm.vue';
+import { getPrizes, deletePrize } from '@/apis/prize';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 export default {
   components: {
@@ -72,6 +81,7 @@ export default {
   setup() {
     const state = reactive({
       tableData: [],
+      formData: {},
       pagination: {
         total: 0,
         page: 1,
@@ -99,7 +109,10 @@ export default {
       getPrisesData();
     };
 
-    const handleEdit = () => {};
+    const handleEdit = (obj) => {
+      state.dialogForm = true;
+      state.formData = obj;
+    };
 
     const handleAdd = () => {
       state.dialogForm = true;
@@ -108,6 +121,25 @@ export default {
     const handleReset = () => {
       state.pagination.page = 1;
       getPrisesData();
+    };
+
+    const handleDelete = (obj) => {
+      ElMessageBox.confirm('请确定是否删除此奖品！', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          deletePrize({ oid: obj.oid })
+            .then((res) => {
+              if (res.data.code === 200) {
+                ElMessage.success(`删除奖品成功！`);
+                getPrisesData();
+              }
+            })
+            .catch((err) => {});
+        })
+        .catch();
     };
 
     onMounted(() => {
@@ -120,6 +152,7 @@ export default {
       handleEdit,
       handleAdd,
       handleReset,
+      handleDelete,
     };
   },
 };
