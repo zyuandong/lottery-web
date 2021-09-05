@@ -34,8 +34,8 @@
       </el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button type="text" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button type="text" class="text-error" @click="handleDelete(scope.row)">
+          <el-button type="text" :disabled="scope.row.is_active === 1" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button type="text" class="text-error" :disabled="scope.row.is_active === 1" @click="handleDelete(scope.row)">
             删除
           </el-button>
         </template>
