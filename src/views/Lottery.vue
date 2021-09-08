@@ -72,8 +72,7 @@
       </el-col>
     </el-row>
 
-    <el-dialog v-model="dialogLottery" width="300px">
-      <template #title>中奖信息</template>
+    <el-dialog v-model="dialogLottery" title="中奖信息" width="300px">
       <div class="dialog-body">
         <img v-if="prize.type === 1" src="@/assets/svg/gold_coin.svg" alt="" />
         <img v-else :src="`/lottery_service_api/${prize.pic}`" alt="" />
