@@ -6,9 +6,17 @@
     <el-row>
       <el-col class="m-b-24" :sm="19">
         <div class="message-box">
-          当前金币数量：
-          <img class="gold-coin" src="@/assets/svg/gold_coin.svg" alt="" />
-          x {{ user.gold_coin_num }}
+          <div class="left">
+            当前金币数量：
+            <img class="gold-coin" src="@/assets/svg/gold_coin.svg" alt="" />
+            x {{ user.gold_coin_num }}
+          </div>
+          <div class="right">
+            <el-button round class="btn-sign-in" size="mini" v-if="isSignIn">已签到</el-button>
+            <el-button round class="btn-sign-in is-active" size="mini" v-else @click="handleSignIn">
+              签 到
+            </el-button>
+          </div>
         </div>
 
         <div class="lottery-panel">
@@ -65,12 +73,10 @@
     </el-row>
 
     <el-dialog v-model="dialogLottery" width="300px">
-      <template #title>
-        中奖信息
-      </template>
+      <template #title>中奖信息</template>
       <div class="dialog-body">
-        <img v-if="prize.type === 1" src="@/assets/svg/gold_coin.svg" alt="">
-        <img v-else :src="`/lottery_service_api/${prize.pic}`" alt="">
+        <img v-if="prize.type === 1" src="@/assets/svg/gold_coin.svg" alt="" />
+        <img v-else :src="`/lottery_service_api/${prize.pic}`" alt="" />
         <div class="m-b-16">🎉 恭喜你获得奖品：「{{ prize.name }}」</div>
         <el-button size="small" type="primary" @click="dialogLottery = false">确定</el-button>
       </div>
@@ -80,12 +86,12 @@
 
 <script>
 import { computed, onBeforeUnmount, onMounted, reactive, ref, toRefs, watch } from 'vue';
-import { lottery } from '@/apis/user';
-import { getPrizePool } from '@/apis/prize';
 import { ElLoading, ElMessage } from 'element-plus';
 import AwardRecord from '@/components/AwardRecord.vue';
 import Barrage from '@/components/Barrage.vue';
 import { useStore } from 'vuex';
+import { lottery, signIn } from '@/apis/user';
+import { getPrizePool } from '@/apis/prize';
 
 export default {
   components: {
@@ -103,7 +109,15 @@ export default {
       bulletMessage: null,
       latestAwardRecord: null,
       dialogLottery: false,
-      prize: null
+      prize: null,
+      isSignIn: computed(() => {
+        const lastSignInTime = new Date(store.state.user.last_sign_in_time);
+        const year = lastSignInTime.getFullYear();
+        const month = lastSignInTime.getMonth();
+        const day = lastSignInTime.getDate();
+        const now = new Date();
+        return year === now.getFullYear() && month === now.getMonth() && day === now.getDate();
+      }),
     });
 
     // index: 抽奖动效所需 index
@@ -199,19 +213,19 @@ export default {
       if (!interval) {
         sendRequest();
         if (probabilityTotal.value === 1 && !state.user.is_admin) state.user.gold_coin_num -= 100;
-        let step = 250
+        let step = 250;
         let startTime = Date.now();
         startAnimation(200);
         let timer = setInterval(() => {
-          startAnimation(step)
-          if (Date.now () - startTime < 2500) {
-            step = step === 50 ? step : step -= 50
+          startAnimation(step);
+          if (Date.now() - startTime < 2500) {
+            step = step === 50 ? step : (step -= 50);
           } else if (Date.now() - startTime > 4000) {
-            step = step === 250 ? step : step += 50
+            step = step === 250 ? step : (step += 50);
           }
-        }, 500)
+        }, 500);
 
-        setTimeout(() => clearInterval(timer), 5000)
+        setTimeout(() => clearInterval(timer), 5000);
 
         // interval = setInterval(() => {
         //   document.querySelector(`.item-${index.value}`).classList.remove('is-active');
@@ -232,6 +246,17 @@ export default {
             state.showMessage = true;
             state.prizePoolData[renderIndexArr[item.place_index]] = item;
           });
+        })
+        .catch((err) => {});
+    };
+
+    const handleSignIn = () => {
+      signIn({ oid: state.user.oid })
+        .then((res) => {
+          if (res.data.code === 200) {
+            ElMessage.success('签到成功，获得 300 金币！');
+            store.dispatch('updateUser', res.data.data);
+          }
         })
         .catch((err) => {});
     };
@@ -317,6 +342,7 @@ export default {
       placeIndexArr: [0, 1, 2, 7, 8, 3, 6, 5, 4],
       prizeItemHeight,
       handleLottery,
+      handleSignIn,
     };
   },
 };
@@ -329,6 +355,9 @@ export default {
   background-color: #3b6af1;
 
   .message-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 50%;
     min-width: 3.7rem;
     max-width: 7.5rem;
@@ -338,6 +367,18 @@ export default {
     .gold-coin {
       width: 0.2rem;
       vertical-align: sub;
+    }
+
+    .btn-sign-in {
+      color: #fff;
+      background-color: rgba(242, 200, 137, 0.5);
+      border: none;
+      cursor: not-allowed;
+
+      &.is-active {
+        background-color: #df7823;
+        cursor: pointer;
+      }
     }
   }
   .text-tip {

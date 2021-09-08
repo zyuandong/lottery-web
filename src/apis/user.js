@@ -49,3 +49,10 @@ export const uploadAvatar = (data) => {
     data
   })
 }
+
+export const signIn = ({oid}) => {
+  return request({
+    url: `${context}/${oid}/sign_in`,
+    method: 'post',
+  })
+}
