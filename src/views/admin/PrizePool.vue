@@ -80,7 +80,7 @@
 
 <script>
 import { computed, onMounted, reactive, ref, toRefs } from 'vue';
-import { getPrizePool, setPrizePool } from '@/apis/prize';
+import { getPrizePool, updatePrize } from '@/apis/prize';
 import SelectPrize from './components/SelectPrize.vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 
@@ -128,7 +128,7 @@ export default {
     };
 
     const handleSetPrizePool = (obj) => {
-      setPrizePool({
+      updatePrize({
         ...obj,
         ...{ is_active: 1, place_index: placeIndex.value },
       })
@@ -149,7 +149,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        setPrizePool({
+        updatePrize({
           ...obj,
           ...{ is_active: 0, probability: 0, place_index: -1 },
         })
@@ -168,7 +168,7 @@ export default {
       if (obj.probability < 0) return;
       obj.probability = obj.probability === '' ? 0 : obj.probability;
 
-      setPrizePool(obj)
+      updatePrize(obj)
         .then((res) => {
           if (res.data.code === 200) {
             ElMessage.success(`「${obj.name}」的获奖概率修改成功！`);
